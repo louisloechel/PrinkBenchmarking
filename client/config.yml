@@ -1,0 +1,18 @@
+# This cnofig specifies the benchmarking client'S behavior
+
+## Where to reach the SUT
+sut_address: localhost
+sut_port: 50051
+
+## How to generate the load
+concurrentcy: 10
+mode: "fixed" # "fixed" or "max"
+interval: 1 # in seconds
+duration: 9000 # in seconds
+warmup: 300 # in seconds
+
+## How to report the results
+output_folder: "/results"
+
+## Input Data for the benchmark
+input_data: "data/total.csv"
