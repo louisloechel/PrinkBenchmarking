@@ -123,8 +123,7 @@ func warmUp(dataset [][]string, duration int, u url.URL) {
 		message := fmt.Sprintf("t_s: %v, message_id: %d, building_id: %s, timestamp: %s, meter_reading: %s, primary_use: %s, square_feet: %s, year_built: %s, floor_count: %s, air_temperature: %s, cloud_coverage: %s, dew_temperature: %s, precip_depth_1_hr: %s, sea_level_pressure: %s, wind_direction: %s, wind_speed: %s",
 			t_s, count, record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13])
 
-		// TODO: Write the message to Flink
-
+		// TODO: Write the message to Flink instead of just printing it (rm if condition)
 		if count%1000000 == 0 {
 			log.Printf("Wrote record: %s to %s", message, u.String())
 		}
@@ -139,7 +138,7 @@ func warmUp(dataset [][]string, duration int, u url.URL) {
 	log.Printf("Wrote all %d records to Flink in %s before warmup time of %ds ended.", len(dataset), passedTime.String(), duration)
 }
 
-func benchmark(dataset [][]string, duration int, u url.URL) {
+func benchmark(dataset [][]string, duration int, interval int, u url.URL) {
 	// benchmark the SUT
 	// Iterate over the records for duration seconds and write them to Kafka
 	count := 0
@@ -147,26 +146,36 @@ func benchmark(dataset [][]string, duration int, u url.URL) {
 	for _, record := range dataset {
 		t_s := time.Now()
 
-		// Message fields:
+		// Bench fields:
+		// t_s, message_id
+
+		// Data fields:
 		// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed
 
 		message := fmt.Sprintf("t_s: %v, message_id: %d, building_id: %s, timestamp: %s, meter_reading: %s, primary_use: %s, square_feet: %s, year_built: %s, floor_count: %s, air_temperature: %s, cloud_coverage: %s, dew_temperature: %s, precip_depth_1_hr: %s, sea_level_pressure: %s, wind_direction: %s, wind_speed: %s",
 			t_s, count, record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13])
 
-		if count%1000000 == 0 {
+		// TODO: Write the message to Flink instead of just printing it (rm if condition)
+		if count%10 == 0 {
 			log.Printf("Wrote record: %s to %s", message, u.String())
 		}
 
 		// Check if the duration has passed
 		if time.Since(start) > time.Duration(duration)*time.Second {
-			break
+			return
+		}
+
+		// Sleep for the interval if count%82==0
+		if count%82 == 0 {
+			time.Sleep(time.Duration(interval) * time.Second)
+			log.Printf("Slept for %d seconds", interval)
 		}
 
 		count++
 	}
 
 	passedTime := time.Since(start)
-	log.Printf("Wrote all %d records to Flink in %s before Benchmark time of %ds ended.", len(dataset), passedTime.String(), duration)
+	log.Printf("Wrote %d records to Flink in %s before Benchmark time of %ds ended.", count, passedTime.String(), duration)
 }
 
 func experimentDone() {
@@ -187,7 +196,7 @@ func main() {
 		log.Fatalf("Could not parse URL: %v", err)
 	}
 
-	// TODO?: set up connection to Flink
+	// TODO: set up connection to Flink
 
 	initialiseResults(config.OutputFolder)
 
@@ -198,7 +207,7 @@ func main() {
 	log.Printf("Warmup done.")
 
 	log.Printf("Starting the benchmark for %d Seconds", config.Duration)
-	benchmark(dataset, config.Duration, *u)
+	benchmark(dataset, config.Duration, config.Interval, *u)
 	log.Printf("Benchmark done.")
 
 	// TODO: Close connection
