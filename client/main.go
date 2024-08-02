@@ -111,7 +111,7 @@ func loadDataset(path string) [][]string {
 
 func warmUp(dataset [][]string, duration int, u url.URL) {
 	// warm up the SUT
-	// Iterate over the records for duration seconds and write them to Kafka
+	// Iterate over the records for duration seconds and write them to console (for now)
 	count := 0
 	start := time.Now()
 	for _, record := range dataset {
@@ -140,7 +140,7 @@ func warmUp(dataset [][]string, duration int, u url.URL) {
 
 func benchmark(dataset [][]string, duration int, interval int, u url.URL) {
 	// benchmark the SUT
-	// Iterate over the records for duration seconds and write them to Kafka
+	// Iterate over the records for duration seconds and write them to console (for now)
 	count := 0
 	start := time.Now()
 	for _, record := range dataset {
@@ -179,7 +179,7 @@ func benchmark(dataset [][]string, duration int, interval int, u url.URL) {
 }
 
 func experimentDone() {
-	// Create experiment_done.txt
+	// Create experiment_done.txt (to be used later in tf script for stopping the cluster)
 	file, err := os.Create("../results/experiment_done.txt")
 	if err != nil {
 		log.Fatalf("Could not create experiment_done.txt: %v", err)
