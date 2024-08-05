@@ -164,7 +164,7 @@ func experimentDone() {
 	defer file.Close()
 }
 
-func socketConnection(u url.URL, config Config, dataset [][]string) {
+func socketConnection(u url.URL, dataset [][]string) {
 	// Open socket connection
 	ln, err := net.Listen("tcp", u.Host)
 	if err != nil {
@@ -180,11 +180,11 @@ func socketConnection(u url.URL, config Config, dataset [][]string) {
 		}
 
 		// Handle connection
-		go handleConnection(conn, config, dataset)
+		go handleConnection(conn, dataset)
 	}
 }
 
-func handleConnection(conn net.Conn, config Config, dataset [][]string) {
+func handleConnection(conn net.Conn, dataset [][]string) {
 	// close connection when done
 	defer conn.Close()
 
@@ -282,7 +282,7 @@ func main() {
 	// write socket connection
 	go func() {
 		defer wg.Done() // Decrement the counter when the goroutine completes
-		socketConnection(*u, config, dataset)
+		socketConnection(*u, dataset)
 	}()
 
 	// read socket connection
