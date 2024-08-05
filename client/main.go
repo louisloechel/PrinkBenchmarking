@@ -4,8 +4,10 @@ import (
 	"encoding/csv"
 	"fmt"
 	"log"
+	"net"
 	"net/url"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/go-yaml/yaml"
@@ -17,7 +19,8 @@ type Metric struct {
 
 type Config struct {
 	Address      string `yaml:"sut_address"`
-	Port         int    `yaml:"sut_port"`
+	PortWrite    int    `yaml:"sut_port_write"`
+	PortRead     int    `yaml:"sut_port_read"`
 	Mode         string `yaml:"mode"`
 	Interval     int    `yaml:"interval"`
 	Duration     int    `yaml:"duration"`
@@ -72,7 +75,7 @@ func initialiseResults(path string) {
 
 	// Write header if the file is empty
 	if info.Size() == 0 {
-		err = writer.Write([]string{"Timestamp", "Stay Time", "Stay Count", "Throughput"})
+		err = writer.Write([]string{"t_e", "t_s", "m_id", "building_id", "timestamp", "meter_reading", "primary_use", "square_feet", "year_built", "floor_count", "air_temperature", "cloud_coverage", "dew_temperature", "precip_depth_1_hr", "sea_level_pressure", "wind_direction", "wind_speed"})
 		if err != nil {
 			log.Fatalf("Could not write to results.csv: %v", err)
 		}
@@ -83,7 +86,20 @@ func initialiseResults(path string) {
 		fmt.Sprintf("%v", time.Now()),
 		fmt.Sprintf("%d", 0),
 		fmt.Sprintf("%d", 0),
-		fmt.Sprintf("%v", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
+		fmt.Sprintf("%d", 0),
 	})
 	if err != nil {
 		log.Fatalf("Could not write to results.csv: %v", err)
@@ -109,7 +125,7 @@ func loadDataset(path string) [][]string {
 	return dataset
 }
 
-func warmUp(dataset [][]string, duration int, u url.URL) {
+func warmUp(dataset [][]string, duration int, conn net.Conn) {
 	// warm up the SUT
 	// Iterate over the records for duration seconds and write them to console (for now)
 	count := 0
@@ -123,10 +139,12 @@ func warmUp(dataset [][]string, duration int, u url.URL) {
 		message := fmt.Sprintf("t_s: %v, message_id: %d, building_id: %s, timestamp: %s, meter_reading: %s, primary_use: %s, square_feet: %s, year_built: %s, floor_count: %s, air_temperature: %s, cloud_coverage: %s, dew_temperature: %s, precip_depth_1_hr: %s, sea_level_pressure: %s, wind_direction: %s, wind_speed: %s",
 			t_s, count, record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13])
 
-		// TODO: Write the message to Flink instead of just printing it (rm if condition)
-		if count%1000000 == 0 {
-			log.Printf("Wrote record: %s to %s", message, u.String())
+		// Write the message to Flink socket
+		_, err := conn.Write([]byte(message))
+		if err != nil {
+			log.Fatalf("Could not write to Flink: %v", err)
 		}
+
 		// Check if the duration has passed
 		if time.Since(start) > time.Duration(duration)*time.Second {
 			break
@@ -138,7 +156,7 @@ func warmUp(dataset [][]string, duration int, u url.URL) {
 	log.Printf("Wrote all %d records to Flink in %s before warmup time of %ds ended.", len(dataset), passedTime.String(), duration)
 }
 
-func benchmark(dataset [][]string, duration int, interval int, u url.URL) {
+func benchmark(dataset [][]string, duration int, conn net.Conn) {
 	// benchmark the SUT
 	// Iterate over the records for duration seconds and write them to console (for now)
 	count := 0
@@ -155,20 +173,15 @@ func benchmark(dataset [][]string, duration int, interval int, u url.URL) {
 		message := fmt.Sprintf("t_s: %v, message_id: %d, building_id: %s, timestamp: %s, meter_reading: %s, primary_use: %s, square_feet: %s, year_built: %s, floor_count: %s, air_temperature: %s, cloud_coverage: %s, dew_temperature: %s, precip_depth_1_hr: %s, sea_level_pressure: %s, wind_direction: %s, wind_speed: %s",
 			t_s, count, record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13])
 
-		// TODO: Write the message to Flink instead of just printing it (rm if condition)
-		if count%10 == 0 {
-			log.Printf("Wrote record: %s to %s", message, u.String())
+		// Write the message to Flink socket
+		_, err := conn.Write([]byte(message))
+		if err != nil {
+			log.Fatalf("Could not write to Flink: %v", err)
 		}
 
 		// Check if the duration has passed
 		if time.Since(start) > time.Duration(duration)*time.Second {
 			return
-		}
-
-		// Sleep for the interval if count%82==0
-		if count%82 == 0 {
-			time.Sleep(time.Duration(interval) * time.Second)
-			log.Printf("Slept for %d seconds", interval)
 		}
 
 		count++
@@ -187,30 +200,139 @@ func experimentDone() {
 	defer file.Close()
 }
 
+func socketConnection(u url.URL, config Config, dataset [][]string) {
+	// Open socket connection
+	ln, err := net.Listen("tcp", u.Host)
+	if err != nil {
+		log.Fatalf("Could not open socket connection: %v", err)
+	}
+	defer ln.Close()
+
+	// Accept connection
+	for {
+		conn, err := ln.Accept()
+		if err != nil {
+			log.Fatalf("Could not accept connection: %v", err)
+		}
+
+		// Handle connection
+		go handleConnection(conn, config, dataset)
+	}
+}
+
+func handleConnection(conn net.Conn, config Config, dataset [][]string) {
+	// close connection when done
+	defer conn.Close()
+
+	log.Printf("Warming up the SUT for %d Seconds", config.Warmup)
+	warmUp(dataset, config.Warmup, conn)
+	log.Printf("Warmup done.")
+
+	log.Printf("Starting the benchmark for %d Seconds", config.Duration)
+	benchmark(dataset, config.Duration, conn)
+	log.Printf("Benchmark done.")
+
+	// close the connection
+	conn.Close()
+}
+
+func readSocketConnection(v url.URL, config Config) {
+	// Open socket connection
+	ln, err := net.Listen("tcp", v.Host)
+	if err != nil {
+		log.Fatalf("Could not open read socket connection: %v", err)
+	}
+	defer ln.Close()
+
+	// Accept connection
+	for {
+		conn, err := ln.Accept()
+		if err != nil {
+			log.Fatalf("Could not accept read connection: %v", err)
+		}
+
+		// Handle connection
+		go handleReadConnection(conn, config)
+	}
+}
+
+func handleReadConnection(conn net.Conn, config Config) {
+	// close connection when done
+	defer conn.Close()
+
+	// Write the data to results.csv
+	file, err := os.OpenFile(config.OutputFolder+"/results.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Could not open results.csv: %v", err)
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+	log.Printf("Reading from connection")
+
+	// Read the data
+	for {
+		buffer := make([]byte, 1024)
+		n, err := conn.Read(buffer)
+		if err != nil {
+			log.Fatalf("Could not read from connection: %v", err)
+		}
+
+		// Print the data
+		message := string(buffer[:n])
+		log.Printf("Read from connection: %s", message)
+
+		err = writer.Write([]string{
+			fmt.Sprintf("%v", time.Now()),
+			message,
+		})
+		if err != nil {
+			log.Fatalf("Could not write to results.csv: %v", err)
+		}
+
+		writer.Flush()
+	}
+}
+
 func main() {
 	config := loadConfig("config.yml")
 
-	// parse url
-	u, err := url.Parse("https://" + config.Address + ":" + fmt.Sprintf("%d", config.Port))
+	// parse url (write)
+	u, err := url.Parse("https://" + config.Address + ":" + fmt.Sprintf("%d", config.PortWrite))
 	if err != nil {
-		log.Fatalf("Could not parse URL: %v", err)
+		log.Fatalf("Could not parse write URL: %v", err)
 	}
 
-	// TODO: set up connection to Flink
+	// parse url (read)
+	v, err := url.Parse("https://" + config.Address + ":" + fmt.Sprintf("%d", config.PortRead))
+	if err != nil {
+		log.Fatalf("Could not parse read URL: %v", err)
+	}
 
 	initialiseResults(config.OutputFolder)
 
 	dataset := loadDataset(config.InputData)
 
-	log.Printf("Warming up the SUT for %d Seconds", config.Warmup)
-	warmUp(dataset, config.Warmup, *u)
-	log.Printf("Warmup done.")
+	var wg sync.WaitGroup
 
-	log.Printf("Starting the benchmark for %d Seconds", config.Duration)
-	benchmark(dataset, config.Duration, config.Interval, *u)
-	log.Printf("Benchmark done.")
+	// Increment the WaitGroup counter
+	wg.Add(4)
 
-	// TODO: Close connection
+	// write socket connection
+	go func() {
+		defer wg.Done() // Decrement the counter when the goroutine completes
+		socketConnection(*u, config, dataset)
+	}()
+
+	// read socket connection
+	go func() {
+		defer wg.Done() // Decrement the counter when the goroutine completes
+		readSocketConnection(*v, config)
+	}()
+
+	// Wait for all goroutines to finish
+	wg.Wait()
 
 	experimentDone()
 	log.Printf("Created output file in: %s", config.OutputFolder)

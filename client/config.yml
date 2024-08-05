@@ -2,7 +2,8 @@
 
 ## Where to reach the SUT
 sut_address: localhost
-sut_port: 50051
+sut_port_write: 50051
+sut_port_read: 50052
 
 ## How to generate the load
 mode: "fixed" # "fixed" or "max"
