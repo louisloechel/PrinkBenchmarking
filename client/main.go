@@ -125,38 +125,7 @@ func loadDataset(path string) [][]string {
 	return dataset
 }
 
-func warmUp(dataset [][]string, duration int, conn net.Conn) {
-	// warm up the SUT
-	// Iterate over the records for duration seconds and write them to console (for now)
-	count := 0
-	start := time.Now()
-	for _, record := range dataset {
-		t_s := time.Now()
-
-		// Message fields:
-		// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed
-
-		message := fmt.Sprintf("t_s: %v, message_id: %d, building_id: %s, timestamp: %s, meter_reading: %s, primary_use: %s, square_feet: %s, year_built: %s, floor_count: %s, air_temperature: %s, cloud_coverage: %s, dew_temperature: %s, precip_depth_1_hr: %s, sea_level_pressure: %s, wind_direction: %s, wind_speed: %s",
-			t_s, count, record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13])
-
-		// Write the message to Flink socket
-		_, err := conn.Write([]byte(message))
-		if err != nil {
-			log.Fatalf("Could not write to Flink: %v", err)
-		}
-
-		// Check if the duration has passed
-		if time.Since(start) > time.Duration(duration)*time.Second {
-			break
-		}
-
-		count++
-	}
-	passedTime := time.Since(start)
-	log.Printf("Wrote all %d records to Flink in %s before warmup time of %ds ended.", len(dataset), passedTime.String(), duration)
-}
-
-func benchmark(dataset [][]string, duration int, conn net.Conn) {
+func benchmark(dataset [][]string, conn net.Conn) {
 	// benchmark the SUT
 	// Iterate over the records for duration seconds and write them to console (for now)
 	count := 0
@@ -179,16 +148,11 @@ func benchmark(dataset [][]string, duration int, conn net.Conn) {
 			log.Fatalf("Could not write to Flink: %v", err)
 		}
 
-		// Check if the duration has passed
-		if time.Since(start) > time.Duration(duration)*time.Second {
-			return
-		}
-
 		count++
 	}
 
 	passedTime := time.Since(start)
-	log.Printf("Wrote %d records to Flink in %s before Benchmark time of %ds ended.", count, passedTime.String(), duration)
+	log.Printf("Wrote %d records to Flink in %s.", count, passedTime.String())
 }
 
 func experimentDone() {
@@ -224,12 +188,8 @@ func handleConnection(conn net.Conn, config Config, dataset [][]string) {
 	// close connection when done
 	defer conn.Close()
 
-	log.Printf("Warming up the SUT for %d Seconds", config.Warmup)
-	warmUp(dataset, config.Warmup, conn)
-	log.Printf("Warmup done.")
-
-	log.Printf("Starting the benchmark for %d Seconds", config.Duration)
-	benchmark(dataset, config.Duration, conn)
+	log.Printf("Starting the benchmark.")
+	benchmark(dataset, conn)
 	log.Printf("Benchmark done.")
 
 	// close the connection
