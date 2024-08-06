@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
 	"log"
@@ -71,11 +72,12 @@ func initialiseResults(path string) {
 	}
 
 	writer := csv.NewWriter(file)
+	writer.Comma = ';' // use semicolon as delimiter
 	defer writer.Flush()
 
 	// Write header if the file is empty
 	if info.Size() == 0 {
-		err = writer.Write([]string{"t_e", "t_s", "m_id", "building_id", "timestamp", "meter_reading", "primary_use", "square_feet", "year_built", "floor_count", "air_temperature", "cloud_coverage", "dew_temperature", "precip_depth_1_hr", "sea_level_pressure", "wind_direction", "wind_speed"})
+		err = writer.Write([]string{"t_e", "m_id", "t_s", "building_id", "timestamp", "meter_reading", "primary_use", "square_feet", "year_built", "floor_count", "air_temperature", "cloud_coverage", "dew_temperature", "precip_depth_1_hr", "sea_level_pressure", "wind_direction", "wind_speed"})
 		if err != nil {
 			log.Fatalf("Could not write to results.csv: %v", err)
 		}
@@ -142,7 +144,7 @@ func benchmark(dataset [][]string, conn net.Conn) {
 		// Data fields:
 		// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed
 
-		message := fmt.Sprintf("%d,%v,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+		message := fmt.Sprintf("%d;%v;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
 			count, t_s, record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13])
 
 		// Write the message to Flink socket
@@ -230,7 +232,7 @@ func handleReadConnection(conn net.Conn, config Config) {
 	}
 	defer file.Close()
 
-	writer := csv.NewWriter(file)
+	writer := bufio.NewWriter(file)
 	defer writer.Flush()
 	log.Printf("Reading from connection")
 
@@ -239,28 +241,22 @@ func handleReadConnection(conn net.Conn, config Config) {
 		buffer := make([]byte, 1024)
 		n, err := conn.Read(buffer)
 		if err != nil {
-			log.Fatalf("Could not read from connection: %v", err)
+			break
 		}
-
-		// Print the data
-		message := string(buffer[:n])
-		log.Print("Read from connection:\n")
-		log.Print(message)
-
-		test := "test"
 
 		// Write the data to results.csv
-		err = writer.Write([]string{
-			fmt.Sprintf("%v", time.Now()),
-			fmt.Sprint(test),
-			fmt.Sprintln(message),
-		})
+		response := buffer[:n]
+		output := fmt.Sprintf("%v; %s", time.Now(), response)
+		log.Printf("Writing: %s", output)
+		_, err = writer.Write([]byte(output))
 		if err != nil {
-			log.Fatalf("Could not write to results.csv: %v", err)
+			log.Fatalf("Could not write to buffer: %v", err)
 		}
 
-		writer.Flush()
 	}
+
+	// flush the buffer
+	writer.Flush()
 }
 
 func main() {
