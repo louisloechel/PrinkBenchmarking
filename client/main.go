@@ -236,17 +236,13 @@ func handleReadConnection(conn net.Conn, config Config) {
 	defer writer.Flush()
 	log.Printf("Reading from connection")
 
-	// Read the data
-	for {
-		buffer := make([]byte, 1024)
-		n, err := conn.Read(buffer)
-		if err != nil {
-			break
-		}
+	reader := bufio.NewScanner(conn)
 
-		// Write the data to results.csv
-		response := buffer[:n]
-		output := fmt.Sprintf("%v; %s", time.Now(), response)
+	// Read the data
+	for reader.Scan() {
+		response := reader.Text()
+
+		output := fmt.Sprintf("%v; %s\n", time.Now(), response)
 		log.Printf("Writing: %s", output)
 		_, err = writer.Write([]byte(output))
 		if err != nil {
