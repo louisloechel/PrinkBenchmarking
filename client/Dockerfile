@@ -1,5 +1,5 @@
 # Use the official Golang image as the base image
-FROM golang:1.19
+FROM golang:1.21.5
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
@@ -10,8 +10,8 @@ COPY go.mod go.sum ./
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
 
-# Copy the source from the current directory to the Working Directory inside the container
-COPY . .
+# Copy the client directory to the Working Directory inside the container
+COPY ./client .
 
 # Build the Go app
 RUN go build -o client ./main.go

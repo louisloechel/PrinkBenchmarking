@@ -241,11 +241,16 @@ func handleReadConnection(conn net.Conn, config Config) {
 
 		// Print the data
 		message := string(buffer[:n])
-		log.Printf("Read from connection: %s", message)
+		log.Print("Read from connection:\n")
+		log.Print(message)
 
+		test := "test"
+
+		// Write the data to results.csv
 		err = writer.Write([]string{
 			fmt.Sprintf("%v", time.Now()),
-			message,
+			fmt.Sprint(test),
+			fmt.Sprintln(message),
 		})
 		if err != nil {
 			log.Fatalf("Could not write to results.csv: %v", err)

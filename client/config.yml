@@ -1,7 +1,7 @@
 # This cnofig specifies the benchmarking client'S behavior
 
 ## Where to reach the SUT
-sut_address: localhost
+sut_address: 0.0.0.0
 sut_port_write: 50051
 sut_port_read: 50052
 
@@ -15,4 +15,4 @@ warmup: 5 # in seconds (e.g., 300 for 5 minutes)
 output_folder: "../results"
 
 ## Input Data for the benchmark
-input_data: "../data/total.csv"
+input_data: "total.csv"
