@@ -6,6 +6,7 @@ services:
     build: .
     volumes:
       - ../results:/results
+    tty: true
     environment:
       - DOCKER_HOST=tcp://host.docker.internal:2375
     ports:
