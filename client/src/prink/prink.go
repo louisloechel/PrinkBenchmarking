@@ -36,11 +36,14 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 		defer reader.Close()
 	}
 
-	net, err := cli.NetworkCreate(ctx, "prink-eval" + experiment.ToFileName(), network.CreateOptions{});
+	networkName := "prink-eval" + experiment.ToFileName()
+	net, err := cli.NetworkCreate(ctx, networkName, network.CreateOptions{});
 	if err != nil {
 		log.Print(err)
 	}
-	defer cli.NetworkRemove(ctx, net.ID)
+	if net.ID != "" {
+		defer cli.NetworkRemove(ctx, net.ID)
+	}
 
 
 	cmd := append([]string{"standalone-job",}, experiment.ToArgs()...)
@@ -58,8 +61,8 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 	},
 	}, nil, &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
-			"prink-network": {
-				NetworkID: net.ID,
+			"network": {
+				NetworkID: networkName,
 			},
 		},
 	}, nil, "")
@@ -81,8 +84,8 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 	},
 	}, nil, &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
-			"prink-network": {
-				NetworkID: net.ID,
+			"network": {
+				NetworkID: networkName,
 			},
 		},
 	}, nil, "")

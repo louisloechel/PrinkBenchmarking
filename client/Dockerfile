@@ -11,7 +11,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the client directory to the Working Directory inside the container
-COPY ./client .
+COPY ./ .
 
 # Build the Go app
 RUN go build -o client ./main.go
