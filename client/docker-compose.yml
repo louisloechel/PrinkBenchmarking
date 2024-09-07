@@ -1,0 +1,13 @@
+
+version: "3"
+
+services:
+  client:
+    build: .
+    volumes:
+      - ../results:/results
+    environment:
+      - DOCKER_HOST=tcp://host.docker.internal:2375
+    ports:
+      - 50051:50051
+      - 50052:50052

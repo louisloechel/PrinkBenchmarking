@@ -1,9 +1,12 @@
 # This cnofig specifies the benchmarking client'S behavior
 
 ## Where to reach the SUT
-sut_address: 0.0.0.0
+sut_address: host.docker.internal
 sut_port_write: 50051
 sut_port_read: 50052
+
+## How to connect to the SUT
+prink_docker_image: "ghcr.io/louisloechel/prink-v2:main"
 
 ## How to generate the load
 mode: "fixed" # "fixed" or "max"
