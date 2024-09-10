@@ -8,11 +8,8 @@ sut_port_read: 50052
 ## How to connect to the SUT
 prink_docker_image: "ghcr.io/louisloechel/prink-v2:main"
 
-## How to generate the load
-mode: "fixed" # "fixed" or "max"
-interval: 1 # in seconds
-duration: 10 # in seconds (e.g., 900 for 15 minutes)
-warmup: 5 # in seconds (e.g., 300 for 5 minutes)
+# Memory for the taskmanager
+taskmanager_memory: 8gb
 
 ## How to report the results
 output_folder: "../results"

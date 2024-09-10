@@ -13,8 +13,13 @@ variable "instance_ami" {
   type        = string
 }
  
-variable "instance_type" {
-  description = "Type of the instance"
+variable "instance_type_server" {
+  description = "Type of the instance for the server"
+  type        = string
+}
+
+variable "instance_type_client" {
+  description = "Type of the instance for the client"
   type        = string
 }
  

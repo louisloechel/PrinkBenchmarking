@@ -2,6 +2,7 @@ package prink
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -78,9 +79,11 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 		Tty:   false,
 		Hostname: "taskmanger",
 		Env: []string{
+			fmt.Sprintf(
 		`FLINK_PROPERTIES=
      jobmanager.rpc.address: jobmanager
-     taskmanager.numberOfTaskSlots: 1`,
+     taskmanager.numberOfTaskSlots: 1
+     taskmanager.memory.process.size: %s`, config.TaskManagerMemory),
 	},
 	}, nil, &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{

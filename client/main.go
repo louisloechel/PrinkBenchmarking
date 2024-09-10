@@ -61,14 +61,14 @@ func getExperiments() []types.Experiment {
 
 func main() {
 	// Load the config
-	config := config.LoadConfig("config.yml")
+	config := config.LoadConfig()
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "listen" {
 			// just listen
 			experiment := types.Experiment{
-				K: 1,
-				Delta: 1250,
+				K: 5,
+				Delta: 20000,
 				L: 0,
 				Beta: 321728,
 				Zeta: 0,
@@ -78,7 +78,7 @@ func main() {
 				SutPortRead: config.PortRead,
 			}
 
-			evaluation.RunSockets(&experiment, config)
+			evaluation.RunSockets(&experiment, *config)
 			return
 		}
 	}
@@ -90,7 +90,7 @@ func main() {
 		// Start the experiment
 		log.Printf("Starting %d experiment: %v", i,  experiment)
 
-		evaluation.RunExperiment(experiment, config)
+		evaluation.RunExperiment(experiment, *config)
 	}
 
 	experimentDone()

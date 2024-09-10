@@ -13,11 +13,15 @@ resource "aws_key_pair" "ssh-key" {
 
 resource "aws_instance" "client" {
   ami                         = var.instance_ami
-  instance_type               = var.instance_type
+  instance_type               = var.instance_type_client
   availability_zone           = var.availability_zone
   security_groups             = [aws_security_group.my_app.id]
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.my_app.id
+
+  root_block_device {
+    volume_size = 50
+  }
  
   key_name = "ssh-key"
  
@@ -25,11 +29,15 @@ resource "aws_instance" "client" {
   user_data = <<-EOF
   #!/bin/bash
   sudo yum update -y
-  sudo yum install -y docker
+  sudo yum install -y docker git
   sudo service docker start
   sudo usermod -a -G docker ec2-user
   sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
+
+  git clone https://github.com/louisloechel/PrinkBenchmarking.git /home/ec2-user/PrinkBenchmarking
+
+
   EOF
  
   tags = {
@@ -40,7 +48,7 @@ resource "aws_instance" "client" {
 
 resource "aws_instance" "server" {
   ami                         = var.instance_ami
-  instance_type               = var.instance_type
+  instance_type               = var.instance_type_server
   availability_zone           = var.availability_zone
   security_groups             = [aws_security_group.my_app.id]
   associate_public_ip_address = true

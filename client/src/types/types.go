@@ -15,12 +15,9 @@ type Config struct {
 	Address      string `yaml:"sut_address"`
 	PortWrite    int    `yaml:"sut_port_write"`
 	PortRead     int    `yaml:"sut_port_read"`
-	Mode         string `yaml:"mode"`
-	Interval     int    `yaml:"interval"`
-	Duration     int    `yaml:"duration"`
-	Warmup       int    `yaml:"warmup"`
 	OutputFolder string `yaml:"output_folder"`
 	InputData    string `yaml:"input_data"`
+	TaskManagerMemory string `yaml:"taskmanager_memory"`
 
 	PrinkDockerImage string `yaml:"prink_docker_image"`
 }
