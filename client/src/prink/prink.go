@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"prinkbenchmarking/src/types"
 	"strings"
 	"text/template"
@@ -35,11 +36,13 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 	if err != nil {
 		return err
 	}
+
+	dockerHost := writer.String()
 	
 	cli, err := client.NewClientWithOpts(
 		client.FromEnv,
 		client.WithAPIVersionNegotiation(),
-		client.WithHost(writer.String()),
+		client.WithHost(dockerHost),
 	)
 	if err != nil {
 		return err
@@ -49,6 +52,9 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 	reader, err := cli.ImagePull(ctx, config.PrinkDockerImage, image.PullOptions{})
 	if err != nil {
 		log.Print(err)
+		if err := exec.Command("docker", "-H", dockerHost, "pull", config.PrinkDockerImage).Run(); err != nil {
+			return err
+		}
 	}
 	if reader != nil {
 		defer reader.Close()

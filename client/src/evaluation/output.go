@@ -70,7 +70,7 @@ func initialiseResults(path string, experiment *types.Experiment) (*bufio.Writer
 	}
 
 	// open file for appending, create if it doesn't exist
-	file, err := os.OpenFile(path+"/results-" + time.Now().Format("2006-01-02.15:04:05") + experiment.ToFileName() + ".csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(path+"/results." + time.Now().Format("2006-01-02_15:04:05") + "." + experiment.ToFileName() + ".csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalf("Could not open results file: %v", err)
 	}
