@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 )
@@ -49,15 +48,9 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 	}
 	defer cli.Close()
 
-	reader, err := cli.ImagePull(ctx, config.PrinkDockerImage, image.PullOptions{})
-	if err != nil {
-		log.Print(err)
-		if err := exec.Command("docker", "-H", dockerHost, "pull", config.PrinkDockerImage).Run(); err != nil {
-			return err
-		}
-	}
-	if reader != nil {
-		defer reader.Close()
+	// reader, err := cli.ImagePull(ctx, config.PrinkDockerImage, image.PullOptions{})
+	if err := exec.Command("docker", "-H", dockerHost, "pull", config.PrinkDockerImage).Run(); err != nil {
+		return err
 	}
 
 	networkName := "prink-eval" + experiment.ToFileName()
