@@ -36,6 +36,7 @@ resource "aws_instance" "client" {
   sudo chmod +x /usr/local/bin/docker-compose
 
   git clone https://github.com/louisloechel/PrinkBenchmarking.git /home/ec2-user/PrinkBenchmarking
+  chown ec2-user:ec2-user /home/ec2-user/PrinkBenchmarking -R
 
 
   EOF
@@ -53,6 +54,8 @@ resource "aws_instance" "server" {
   security_groups             = [aws_security_group.my_app.id]
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.my_app.id
+
+  count = 10
  
   key_name = "ssh-key"
  
@@ -76,6 +79,6 @@ resource "aws_instance" "server" {
   EOF
  
   tags = {
-    Name = "my_app_SERVER"
+    Name = "my_app_SERVER-${count.index}"
   }
 }
