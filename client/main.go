@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"net"
 	"os"
 	"prinkbenchmarking/src/config"
 	"prinkbenchmarking/src/evaluation"
 	"prinkbenchmarking/src/types"
+	"sync"
 )
 
 
@@ -27,7 +29,8 @@ func getExperiments() []types.Experiment {
 	// mu= 100 (wie im original paper)
 
 	k := []int{5,10,20,40,80}
-	delta := []int{1250,5000,20000,80000}
+	// 20000, 80000 take too long
+	delta := []int{1250,5000}
 	l := []int{0,2,4,8}
 	beta := []int{321728,}
 	mu := []int{100,}
@@ -59,9 +62,26 @@ func getExperiments() []types.Experiment {
 }
 
 
+// Get preferred outbound ip of this machine
+func GetOutboundIP() net.IP {
+    conn, err := net.Dial("udp", "8.8.8.8:80")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer conn.Close()
+
+    localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+    return localAddr.IP
+}
+
+
 func main() {
 	// Load the config
 	config := config.LoadConfig()
+
+	localIP := GetOutboundIP()
+	log.Printf("Local IP: %s", localIP.String())
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "listen" {
@@ -73,7 +93,8 @@ func main() {
 				Beta: 321728,
 				Zeta: 0,
 				Mu: 100,
-				SutHost: config.Address,
+				LocalHost: localIP.String(),
+				SutHost: config.SutAddresses[0],
 				SutPortWrite: config.PortWrite,
 				SutPortRead: config.PortRead,
 			}
@@ -83,16 +104,42 @@ func main() {
 		}
 	}
 
-	for i, experiment := range getExperiments() {
-		experiment.SutHost = config.Address
-		experiment.SutPortWrite = config.PortWrite
-		experiment.SutPortRead = config.PortRead
-		// Start the experiment
-		log.Printf("Starting %d experiment: %v", i,  experiment)
-
-		evaluation.RunExperiment(experiment, *config)
-	}
+	StartExperiments(localIP.String(), config)
 
 	experimentDone()
 	log.Printf("Created output files in: %s", config.OutputFolder)
+}
+
+
+func StartExperiments(localIP string, config *types.Config) {
+	wg := sync.WaitGroup{}
+
+	addresses := config.SutAddresses
+	log.Println("Starting experiments on: ", addresses)
+
+	experiments := getExperiments()
+
+	wg.Add(len(addresses))
+
+	for i, sutHost := range addresses {
+		go func(i int, sutHost string) {
+			for len(experiments) > 0 {
+				// pick first experiment
+				var experiment types.Experiment
+				experiment, experiments = experiments[0], experiments[1:]
+
+				experiment.LocalHost = localIP
+				experiment.SutHost = sutHost
+				experiment.SutPortWrite = config.PortWrite + 2*i
+				experiment.SutPortRead = config.PortRead + 2*i
+				// Start the experiment
+				log.Printf("Starting %d experiment on %s: %v", len(experiments), sutHost, experiment)
+
+				evaluation.RunExperiment(experiment, *config)
+			}
+			defer wg.Done()
+		}(i, sutHost)
+	}
+
+	wg.Wait()
 }

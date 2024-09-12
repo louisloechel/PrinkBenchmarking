@@ -12,7 +12,8 @@ type Metric struct {
 }
 
 type Config struct {
-	Address      string `yaml:"sut_address"`
+	SutAddresses []string `yaml:"sut_addresses"`
+	SutDockerHostTemplate string `yaml:"sut_docker_host_template"`
 	PortWrite    int    `yaml:"sut_port_write"`
 	PortRead     int    `yaml:"sut_port_read"`
 	OutputFolder string `yaml:"output_folder"`
@@ -36,13 +37,14 @@ type Experiment struct {
 		Zeta int
 		Mu int
 
+		LocalHost string
 		SutHost string
 		SutPortWrite int
 		SutPortRead int
 }
 
 func (e Experiment) String() string {
-	return fmt.Sprintf("Experiment: k=%d, delta=%d, l=%d, beta=%d, zeta=%d, mu=%d, sut_host=%s, sut_port_write=%d, sut_port_read=%d", e.K, e.Delta, e.L, e.Beta, e.Zeta, e.Mu, e.SutHost, e.SutPortWrite, e.SutPortRead)
+	return fmt.Sprintf("Experiment: k=%d, delta=%d, l=%d, beta=%d, zeta=%d, mu=%d, local_host=%s, sut_host=%s, sut_port_write=%d, sut_port_read=%d", e.K, e.Delta, e.L, e.Beta, e.Zeta, e.Mu, e.LocalHost, e.SutHost, e.SutPortWrite, e.SutPortRead)
 }
 
 func (e Experiment) ToFileName () string {
@@ -57,7 +59,7 @@ func (e Experiment) ToArgs() []string {
 		"--beta", fmt.Sprintf("%d", e.Beta),
 		"--zeta", fmt.Sprintf("%d", e.Zeta),
 		"--mu", fmt.Sprintf("%d", e.Mu),
-		"--sut_host", e.SutHost,
+		"--sut_host", e.LocalHost, // in the container, the SUT host is the local host
 		"--sut_port_write", fmt.Sprintf("%d", e.SutPortWrite),
 		"--sut_port_read", fmt.Sprintf("%d", e.SutPortRead),
 	}

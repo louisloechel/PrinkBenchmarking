@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 	"prinkbenchmarking/src/types"
+	"strings"
+	"text/template"
 	"time"
 
 	"github.com/docker/docker/api/types/container"
@@ -20,9 +22,24 @@ import (
 func StartPrink(experiment *types.Experiment, config types.Config) error {
 	ctx := context.Background()
 
+	// string writer
+	writer := new(strings.Builder)
+	tmpl, err := template.New("dockerHost").Parse(config.SutDockerHostTemplate)
+	if err != nil {
+		return err
+	}
+
+	err = tmpl.Execute(writer, map[string]string{
+		"Address": experiment.SutHost,
+	})
+	if err != nil {
+		return err
+	}
+	
 	cli, err := client.NewClientWithOpts(
-		client.FromEnv, 
+		client.FromEnv,
 		client.WithAPIVersionNegotiation(),
+		client.WithHost(writer.String()),
 	)
 	if err != nil {
 		return err

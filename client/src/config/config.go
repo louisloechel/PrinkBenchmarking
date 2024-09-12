@@ -27,7 +27,7 @@ func LoadConfig() *types.Config {
 		log.Print("Using environment variable for configuration")
 	} else {
 		// Load the .yaml file
-		configPath := dir("config.yaml")
+		configPath := dir("config.yml")
 		config, err = ReadConfigFromFile(configPath)
 		log.Print("Using config.yaml for configuration")
 	}
