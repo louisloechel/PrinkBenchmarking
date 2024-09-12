@@ -13,6 +13,7 @@ type Metric struct {
 
 type Config struct {
 	SutAddresses []string `yaml:"sut_addresses"`
+	LocalAddress string `yaml:"local_address"`
 	SutDockerHostTemplate string `yaml:"sut_docker_host_template"`
 	PortWrite    int    `yaml:"sut_port_write"`
 	PortRead     int    `yaml:"sut_port_read"`

@@ -80,8 +80,12 @@ func main() {
 	// Load the config
 	config := config.LoadConfig()
 
-	localIP := GetOutboundIP()
-	log.Printf("Local IP: %s", localIP.String())
+	localIP := config.LocalAddress
+	if localIP == "" {
+		localIP = GetOutboundIP().String()
+	}
+	
+	log.Printf("Local IP: %s", localIP)
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "listen" {
@@ -93,7 +97,7 @@ func main() {
 				Beta: 321728,
 				Zeta: 0,
 				Mu: 100,
-				LocalHost: localIP.String(),
+				LocalHost: localIP,
 				SutHost: config.SutAddresses[0],
 				SutPortWrite: config.PortWrite,
 				SutPortRead: config.PortRead,
@@ -104,7 +108,7 @@ func main() {
 		}
 	}
 
-	StartExperiments(localIP.String(), config)
+	StartExperiments(localIP, config)
 
 	experimentDone()
 	log.Printf("Created output files in: %s", config.OutputFolder)

@@ -3,6 +3,7 @@
 ## Where to reach the SUT (start)
 sut_port_write: 50051
 sut_port_read: 50052
+local_address: "host.docker.internal"
 
 # sut addresses
 sut_addresses:
