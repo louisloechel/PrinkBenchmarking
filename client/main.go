@@ -124,9 +124,10 @@ func StartExperiments(localIP string, config *types.Config) {
 
 	experiments := []types.Experiment{}
 	for run := 0; run < 3; run++ {
-		toAdd := getExperiments()
-		for _, e := range toAdd {
+		toAdd := []types.Experiment{}
+		for _, e := range getExperiments() {
 			e.RunId = run
+			toAdd = append(toAdd, e)
 		}
 		experiments = append(experiments, toAdd...)
 	}
