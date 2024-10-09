@@ -42,6 +42,8 @@ type Experiment struct {
 		SutHost string
 		SutPortWrite int
 		SutPortRead int
+
+		RunId int
 }
 
 func (e Experiment) String() string {

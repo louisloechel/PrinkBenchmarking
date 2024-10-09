@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 	"time"
 )
 
@@ -18,16 +19,16 @@ func benchmark(dataset [][]string, conn net.Conn) error {
 		if i == 0 {
 			continue
 		}
-		t_s := time.Now()
-
-		// Bench fields:
-		// t_s, message_id
 
 		// Data fields:
-		// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed
+		// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed, building_id2, unix_timestamp,
+		// 
+		// Benchmark fields (append to the end): 
+		// m_id, ts
 
-		message := fmt.Sprintf("%d;%v;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-			count, t_s, record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13])
+		ts := time.Now()
+	
+		message := strings.Join(record, ";") + fmt.Sprintf(";%d;%v\n", count, ts)
 
 		// Write the message to Flink socket
 		_, err := conn.Write([]byte(message))

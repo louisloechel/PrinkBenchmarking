@@ -101,6 +101,7 @@ func main() {
 				SutHost: config.SutAddresses[0],
 				SutPortWrite: config.PortWrite,
 				SutPortRead: config.PortRead,
+				RunId: 0,
 			}
 
 			evaluation.RunSockets(&experiment, *config)
@@ -121,7 +122,14 @@ func StartExperiments(localIP string, config *types.Config) {
 	addresses := config.SutAddresses
 	log.Println("Starting experiments on: ", addresses)
 
-	experiments := getExperiments()
+	experiments := []types.Experiment{}
+	for run := 0; run < 3; run++ {
+		toAdd := getExperiments()
+		for _, e := range toAdd {
+			e.RunId = run
+		}
+		experiments = append(experiments, toAdd...)
+	}
 
 	wg.Add(len(addresses))
 
