@@ -5,6 +5,7 @@ services:
   client:
     build: .
     volumes:
+      - ./prometheus:/app/prometheus
       - ../results:/results
     tty: true
     environment:
