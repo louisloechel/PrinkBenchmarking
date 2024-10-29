@@ -116,11 +116,33 @@ func main() {
 }
 
 
+func SetPrometheusTargets(addresses []string) {
+	// Set the prometheus targets
+	for target, port := range map[string]string {"jobmanager": "9249", "taskmanager": "9250"} {
+		targets := ""
+		for i, address := range addresses {
+			targets += `{"targets":["` + address + `:` + port + `"],"labels":{"instance":"` + address + `:` + port +`","job":"prink"}}`
+			if i < len(addresses)-1 {
+				targets += ","
+			}
+		}
+		targets = "[" + targets + "]"
+		err := os.WriteFile("./prometheus/targets-" + target + ".json", []byte(targets), 0666)
+		if err != nil {
+			log.Fatalf("Could not write targets.json: %v", err)
+		}
+	}
+}
+
+
 func StartExperiments(localIP string, config *types.Config) {
 	wg := sync.WaitGroup{}
 
 	addresses := config.SutAddresses
 	log.Println("Starting experiments on: ", addresses)
+
+	// add addresses to targets.json
+	SetPrometheusTargets(addresses)
 
 	experiments := []types.Experiment{}
 	for run := 0; run < 3; run++ {
