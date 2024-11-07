@@ -258,7 +258,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "sum by(primary_use) (raw_gauge)",
+          "expr": "sum by(primary_use) (prink_gauge)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
