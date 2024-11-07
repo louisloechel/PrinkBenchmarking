@@ -10,8 +10,6 @@ import (
 	"sync"
 )
 
-
-
 func experimentDone() {
 	// Create experiment_done.txt (to be used later in tf script for stopping the cluster)
 	file, err := os.Create("../results/experiment_done.txt")
@@ -28,13 +26,12 @@ func getExperiments() []types.Experiment {
 	// beta (active clusters). Damit das keinen Einfluss hat, so hoch setzen wie Daten: beta= 321728
 	// mu= 100 (wie im original paper)
 
-	k := []int{5,10,20,40,80}
+	k := []int{5, 10, 20, 40, 80}
 	// 20000, 80000 take too long
-	delta := []int{1250,5000}
-	l := []int{0,2,4,8}
-	beta := []int{321728,}
-	mu := []int{100,}
-
+	delta := []int{1250, 5000}
+	l := []int{0, 2, 4, 8}
+	beta := []int{321728}
+	mu := []int{100}
 
 	experiments := []types.Experiment{}
 
@@ -44,12 +41,12 @@ func getExperiments() []types.Experiment {
 				for _, beta := range beta {
 					for _, mu := range mu {
 						experiment := types.Experiment{
-							K: k,
+							K:     k,
 							Delta: delta,
-							L: l,
-							Beta: beta,
-							Zeta: 0,
-							Mu: mu,
+							L:     l,
+							Beta:  beta,
+							Zeta:  0,
+							Mu:    mu,
 						}
 						experiments = append(experiments, experiment)
 					}
@@ -61,20 +58,18 @@ func getExperiments() []types.Experiment {
 	return experiments
 }
 
-
 // Get preferred outbound ip of this machine
 func GetOutboundIP() net.IP {
-    conn, err := net.Dial("udp", "8.8.8.8:80")
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer conn.Close()
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
 
-    localAddr := conn.LocalAddr().(*net.UDPAddr)
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
 
-    return localAddr.IP
+	return localAddr.IP
 }
-
 
 func main() {
 	// Load the config
@@ -84,24 +79,28 @@ func main() {
 	if localIP == "" {
 		localIP = GetOutboundIP().String()
 	}
-	
+
 	log.Printf("Local IP: %s", localIP)
+
+	// Start Prometheus exporter and register metrics
+	go evaluation.StartPrometheusExporter(config.PrometheusExporterAddress)
+	evaluation.RegisterMetrics()
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "listen" {
 			// just listen
 			experiment := types.Experiment{
-				K: 5,
-				Delta: 20000,
-				L: 0,
-				Beta: 321728,
-				Zeta: 0,
-				Mu: 100,
-				LocalHost: localIP,
-				SutHost: config.SutAddresses[0],
+				K:            5,
+				Delta:        20000,
+				L:            0,
+				Beta:         321728,
+				Zeta:         0,
+				Mu:           100,
+				LocalHost:    localIP,
+				SutHost:      config.SutAddresses[0],
 				SutPortWrite: config.PortWrite,
-				SutPortRead: config.PortRead,
-				RunId: 0,
+				SutPortRead:  config.PortRead,
+				RunId:        0,
 			}
 
 			evaluation.RunSockets(&experiment, *config)
@@ -115,25 +114,23 @@ func main() {
 	log.Printf("Created output files in: %s", config.OutputFolder)
 }
 
-
 func SetPrometheusTargets(addresses []string) {
 	// Set the prometheus targets
-	for target, port := range map[string]string {"jobmanager": "9249", "taskmanager": "9250"} {
+	for target, port := range map[string]string{"jobmanager": "9249", "taskmanager": "9250"} {
 		targets := ""
 		for i, address := range addresses {
-			targets += `{"targets":["` + address + `:` + port + `"],"labels":{"instance":"` + address + `:` + port +`","job":"prink"}}`
+			targets += `{"targets":["` + address + `:` + port + `"],"labels":{"instance":"` + address + `:` + port + `","job":"prink"}}`
 			if i < len(addresses)-1 {
 				targets += ","
 			}
 		}
 		targets = "[" + targets + "]"
-		err := os.WriteFile("./prometheus/targets-" + target + ".json", []byte(targets), 0666)
+		err := os.WriteFile("./prometheus/targets-"+target+".json", []byte(targets), 0666)
 		if err != nil {
 			log.Fatalf("Could not write targets.json: %v", err)
 		}
 	}
 }
-
 
 func StartExperiments(localIP string, config *types.Config) {
 	wg := sync.WaitGroup{}

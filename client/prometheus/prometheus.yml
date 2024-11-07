@@ -27,7 +27,7 @@ scrape_configs:
     scheme: http
     file_sd_configs:
       - files:
-        - 'targets-jobmanager.json'
+          - "targets-jobmanager.json"
   - job_name: prink-taskmanager
     honor_timestamps: true
     scrape_interval: 15s
@@ -36,4 +36,13 @@ scrape_configs:
     scheme: http
     file_sd_configs:
       - files:
-        - 'targets-taskmanager.json'
+          - "targets-taskmanager.json"
+  - job_name: go-demo
+    honor_timestamps: true
+    scrape_interval: 1s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+          - host.docker.internal:8080

@@ -11,7 +11,6 @@ import (
 	"time"
 )
 
-
 func handleReadConnection(conn net.Conn, config types.Config, experiment *types.Experiment) error {
 	// close connection when done
 
@@ -26,6 +25,10 @@ func handleReadConnection(conn net.Conn, config types.Config, experiment *types.
 	for reader.Scan() {
 		response := reader.Text()
 
+		// Export record as prometheus Gauge
+		record := strings.Split(response, ";")
+		ExportRecordAsPrometheusGaugePrink(record)
+
 		output := fmt.Sprintf("%v; %s\n", time.Now(), response)
 		_, err := writer.Write([]byte(output))
 		if err != nil {
@@ -39,8 +42,6 @@ func handleReadConnection(conn net.Conn, config types.Config, experiment *types.
 
 	return nil
 }
-
-
 
 func readSocketConnection(e *types.Experiment, config types.Config) error {
 	// Open socket connection
@@ -61,8 +62,6 @@ func readSocketConnection(e *types.Experiment, config types.Config) error {
 	return handleReadConnection(conn, config, e)
 }
 
-
-
 func initialiseResults(path string, experiment *types.Experiment) (*bufio.Writer, *os.File) {
 	path = fmt.Sprintf("%s/%d", path, experiment.RunId)
 
@@ -72,7 +71,7 @@ func initialiseResults(path string, experiment *types.Experiment) (*bufio.Writer
 	}
 
 	// open file for appending, create if it doesn't exist
-	file, err := os.OpenFile(path+"/results." + time.Now().Format("2006-01-02_15:04:05") + "." + experiment.ToFileName() + ".csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(path+"/results."+time.Now().Format("2006-01-02_15:04:05")+"."+experiment.ToFileName()+".csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalf("Could not open results file: %v", err)
 	}
@@ -88,7 +87,7 @@ func initialiseResults(path string, experiment *types.Experiment) (*bufio.Writer
 
 	// Write header if the file is empty
 	if info.Size() == 0 {
-				
+
 		_, err = writer.WriteString(strings.Join([]string{"t_e", "building_id", "timestamp", "meter_reading", "primary_use", "square_feet", "year_built", "floor_count", "air_temperature", "cloud_coverage", "dew_temperature", "precip_depth_1_hr", "sea_level_pressure", "wind_direction", "wind_speed", "m_id", "t_s", "info_loss"}, ";"))
 		writer.Write([]byte("\n"))
 		if err != nil {

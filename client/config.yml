@@ -8,11 +8,10 @@ local_address: "host.docker.internal"
 # sut addresses
 sut_addresses:
   - host.docker.internal
-  - host.docker.internal
+  # - host.docker.internal
 
 # sut_docker_host_template: "tcp://{{.Address}}:2375"
 sut_docker_host_template: "unix:///var/run/docker.sock"
-
 
 ## How to connect to the SUT
 prink_docker_image: "ghcr.io/louisloechel/prink-v2:main"
@@ -26,3 +25,5 @@ output_folder: "../results"
 ## Input Data for the benchmark
 input_data: "total.csv"
 
+## Prometheus configuration
+prom-address: 0.0.0.0:8080

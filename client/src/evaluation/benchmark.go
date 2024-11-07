@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-
-
 func benchmark(dataset [][]string, conn net.Conn) error {
 	// benchmark the SUT
 	// Iterate over the records for duration seconds and write them to console (for now)
@@ -20,14 +18,17 @@ func benchmark(dataset [][]string, conn net.Conn) error {
 			continue
 		}
 
+		// Export record as prometheus Gauge
+		ExportRecordAsPrometheusGaugeRaw(record)
+
 		// Data fields:
 		// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed, building_id2, unix_timestamp,
-		// 
-		// Benchmark fields (append to the end): 
+		//
+		// Benchmark fields (append to the end):
 		// m_id, ts
 
 		ts := time.Now()
-	
+
 		message := strings.Join(record, ";") + fmt.Sprintf(";%d;%v\n", count, ts)
 
 		// Write the message to Flink socket
@@ -44,5 +45,3 @@ func benchmark(dataset [][]string, conn net.Conn) error {
 
 	return nil
 }
-
-
