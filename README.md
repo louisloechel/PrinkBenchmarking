@@ -20,3 +20,15 @@ go run main.go
 - loicated at `http://localhost:3000`
 
 ![](resources/dashboard.png)
+
+### 🪧 Demo execution
+- Run the client
+````
+cd client
+go run main.go
+````
+- run grafana and victoria metrics
+````
+docker-compose up grafana -d
+docker-compose up victoriametrics -d
+```
