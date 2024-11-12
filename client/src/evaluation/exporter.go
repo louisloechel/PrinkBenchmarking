@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -45,6 +46,7 @@ func RegisterMetrics() {
 func ExportRecordAsPrometheusGaugeRaw(record []string) {
 	// Export record as prometheus Gauge
 	buildingID := record[0]
+	timestamp := record[1]
 	primaryUse := record[3]
 
 	// Data fields:
@@ -54,12 +56,22 @@ func ExportRecordAsPrometheusGaugeRaw(record []string) {
 		log.Printf("Error converting meter reading to float: %v", err)
 		return
 	}
-	RawGauge.WithLabelValues(buildingID, primaryUse).Set(meter_reading)
+
+	// meter_reading := meter_reading_sum / float64(len(meter_readings))
+	ts, err := time.Parse(time.DateTime, timestamp)
+	if err != nil {
+		log.Printf("Error converting timestamp to time: %v in ExportRecordAsPrometheusGaugeRaw", err)
+		return
+	}
+
+	prometheus.NewMetricWithTimestamp(ts, prometheus.MustNewConstMetric(RawGauge.WithLabelValues(buildingID, primaryUse).Desc(), prometheus.GaugeValue, meter_reading, buildingID, primaryUse))
+	// RawGauge.WithLabelValues(buildingID, primaryUse, timestamp).Set(meter_reading)
 }
 
 func ExportRecordAsPrometheusGaugePrink(record []string) {
 	// Export record as prometheus Gauge
 	buildingID := record[0]
+	timestamp := record[1]
 	primaryUse := record[3]
 
 	// Data fields:
@@ -78,7 +90,18 @@ func ExportRecordAsPrometheusGaugePrink(record []string) {
 		}
 		meter_reading_sum += meter_reading
 	}
-	meter_reading := meter_reading_sum / float64(len(meter_readings))
+	meter_reading, err := strconv.ParseFloat(meter_readings[1], 64)
+	if err != nil {
+		log.Printf("Error converting meter reading to float: %v", err)
+		return
+	}
+	// meter_reading := meter_reading_sum / float64(len(meter_readings))
+	ts, err := time.Parse(time.DateTime, timestamp)
+	if err != nil {
+		log.Printf("Error converting timestamp to time: %v in ExportRecordAsPrometheusGaugePrink", err)
+		return
+	}
 
-	PrinkGauge.WithLabelValues(buildingID, primaryUse).Set(meter_reading)
+	prometheus.NewMetricWithTimestamp(ts, prometheus.MustNewConstMetric(PrinkGauge.WithLabelValues(buildingID, primaryUse).Desc(), prometheus.GaugeValue, meter_reading, buildingID, primaryUse))
+	// PrinkGauge.WithLabelValues(buildingID, primaryUse).Set(meter_reading)
 }
