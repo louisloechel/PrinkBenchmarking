@@ -18,7 +18,6 @@ import (
 	"github.com/docker/go-connections/nat"
 )
 
-
 func StartPrink(experiment *types.Experiment, config types.Config) error {
 	ctx := context.Background()
 
@@ -91,6 +90,7 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 			`FLINK_PROPERTIES=
      jobmanager.rpc.address: jobmanager
 		 rest.profiling.enabled: true
+		 rest.flamegraph.enabled: true
 		 metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
 		 metrics.reporter.prom.port: 9249`,
 		},
@@ -122,6 +122,7 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 		 metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
 		 metrics.reporter.prom.port: 9250
 		 rest.profiling.enabled: true
+		 rest.flamegraph.enabled: true
      taskmanager.numberOfTaskSlots: 1
      taskmanager.memory.process.size: %s`, config.TaskManagerMemory),
 		},
