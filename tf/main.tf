@@ -55,7 +55,7 @@ resource "aws_instance" "server" {
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.my_app.id
 
-  count = 10
+  count = 20
  
   key_name = "ssh-key"
  

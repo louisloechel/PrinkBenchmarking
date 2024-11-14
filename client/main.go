@@ -28,7 +28,7 @@ func getExperiments() []types.Experiment {
 
 	k := []int{5, 10, 20, 40, 80}
 	// 20000, 80000 take too long
-	delta := []int{1250, 5000}
+	delta := []int{1250, 5000, 20000}
 	l := []int{0, 2, 4, 8}
 	beta := []int{321728}
 	mu := []int{100}
