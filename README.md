@@ -31,4 +31,9 @@ go run main.go
 ````
 docker-compose up grafana -d
 docker-compose up victoriametrics -d
-```
+````
+
+- go to `http://localhost:3000` and login with username: `admin` and pw: `grafana`
+- connect a datasource: `http://victoriammetrics:8428`
+- import the dashboard from `client/dashboard_references/*dashboard.json`
+- enjoy the beautiful dashboard

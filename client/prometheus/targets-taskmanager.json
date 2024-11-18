@@ -1,0 +1,1 @@
+[{"targets":["host.docker.internal:9250"],"labels":{"instance":"host.docker.internal:9250","job":"prink"}}]
