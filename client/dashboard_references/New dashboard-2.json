@@ -28,11 +28,11 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 3,
-        "x": 5,
+        "w": 2,
+        "x": 6,
         "y": 0
       },
-      "id": 16,
+      "id": 7,
       "options": {
         "code": {
           "language": "plaintext",
@@ -76,311 +76,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "displayName": "Gesamtverbrauch",
-          "fieldMinMax": true,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "kwatth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 2
-      },
-      "id": 17,
-      "options": {
-        "colorMode": "background_solid",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "percentChangeColorMode": "inverted",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": true,
-        "textMode": "value_and_name",
-        "wideLayout": false
-      },
-      "pluginVersion": "11.3.0+security-01",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ee37wjvlvd2bkc"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum (raw_gauge_meter_reading)",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Energieverbrauch Gesamt",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "de4eal35sbl6of"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "displayName": "Verbrauch pro ft^2",
-          "fieldMinMax": true,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "kwatth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 6,
-        "y": 2
-      },
-      "id": 15,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "inverted",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": true,
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.0+security-01",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ee37wjvlvd2bkc"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "sum (raw_gauge_meter_reading/raw_gauge_square_feet)",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Energieverbrauch pro ft^2",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "de4eal35sbl6of"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "displayName": "Gesamtverbrauch",
-          "fieldMinMax": true,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "kwatth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 12,
-        "y": 2
-      },
-      "id": 19,
-      "options": {
-        "colorMode": "background_solid",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "percentChangeColorMode": "inverted",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": true,
-        "textMode": "value_and_name",
-        "wideLayout": false
-      },
-      "pluginVersion": "11.3.0+security-01",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ee37wjvlvd2bkc"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum(prink_gauge_meter_reading)",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Energieverbrauch Gesamt",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "de4eal35sbl6of"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "displayName": "Verbrauch pro ft^2",
-          "fieldMinMax": true,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "kwatth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 18,
-        "y": 2
-      },
-      "id": 18,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "inverted",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": true,
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.0+security-01",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "ee37wjvlvd2bkc"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "sum (prink_gauge_meter_reading/raw_gauge_square_feet)",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Energieverbrauch pro ft^2",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -408,9 +104,9 @@
       },
       "gridPos": {
         "h": 11,
-        "w": 12,
+        "w": 7,
         "x": 0,
-        "y": 9
+        "y": 2
       },
       "id": 13,
       "options": {
@@ -455,7 +151,83 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "displayName": "kWh/ft^2",
+          "fieldMinMax": true,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 5,
+        "x": 7,
+        "y": 2
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": true,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.0+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ee37wjvlvd2bkc"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum (raw_gauge_meter_reading/raw_gauge_square_feet)",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Energieverbrauch pro ft^2",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -483,9 +255,9 @@
       },
       "gridPos": {
         "h": 11,
-        "w": 12,
+        "w": 7,
         "x": 12,
-        "y": 9
+        "y": 2
       },
       "id": 1,
       "options": {
@@ -530,7 +302,83 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "displayName": "kWh/ft^2",
+          "fieldMinMax": true,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 5,
+        "x": 19,
+        "y": 2
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": true,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.0+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ee37wjvlvd2bkc"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum(prink_gauge_meter_reading/prink_gauge_square_feet)",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Energieverbrauch pro ft^2",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -579,8 +427,7 @@
                 "value": null
               }
             ]
-          },
-          "unit": "kwatth"
+          }
         },
         "overrides": [
           {
@@ -604,7 +451,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 20
+        "y": 13
       },
       "id": 11,
       "options": {
@@ -628,12 +475,10 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "exemplar": false,
           "expr": "sum by(primary_use) (raw_gauge_meter_reading)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "interval": "",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A",
@@ -646,7 +491,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -699,8 +544,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "kwatth"
+          }
         },
         "overrides": []
       },
@@ -708,7 +552,7 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 20
+        "y": 13
       },
       "id": 12,
       "options": {
@@ -736,7 +580,6 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "interval": "",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A",
@@ -749,7 +592,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -775,7 +618,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 24
       },
       "id": 3,
       "options": {
@@ -827,7 +670,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -853,7 +696,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 24
       },
       "id": 6,
       "options": {
@@ -903,35 +746,9 @@
       "type": "bargauge"
     },
     {
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 5,
-        "x": 10,
-        "y": 38
-      },
-      "id": 7,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "# >>> Sektor: Education <<<",
-        "mode": "markdown"
-      },
-      "pluginVersion": "11.3.0+security-01",
-      "title": "",
-      "transparent": true,
-      "type": "text"
-    },
-    {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -960,7 +777,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 40
+        "y": 31
       },
       "id": 2,
       "options": {
@@ -1005,7 +822,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -1034,7 +851,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 31
       },
       "id": 9,
       "options": {
@@ -1079,7 +896,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -1109,7 +926,7 @@
         "h": 19,
         "w": 12,
         "x": 0,
-        "y": 48
+        "y": 39
       },
       "id": 4,
       "options": {
@@ -1162,7 +979,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "de4eal35sbl6of"
+        "uid": "ce4b10001qf40a"
       },
       "fieldConfig": {
         "defaults": {
@@ -1192,7 +1009,7 @@
         "h": 19,
         "w": 12,
         "x": 12,
-        "y": 48
+        "y": 39
       },
       "id": 10,
       "options": {
@@ -1258,6 +1075,6 @@
   "timezone": "browser",
   "title": "New dashboard",
   "uid": "fe38bdwz0v9xcb",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
