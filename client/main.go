@@ -107,8 +107,14 @@ func main() {
 			return
 		}
 	}
+	oneExperimentMode := false
+	if len(os.Args) > 1 && os.Args[1] == "one-experiment" {
+		oneExperimentMode = true
+		log.Print("Running in one-experiment mode")
+	}
 
-	StartExperiments(localIP, config)
+
+	StartExperiments(localIP, config, oneExperimentMode)
 
 	experimentDone()
 	log.Printf("Created output files in: %s", config.OutputFolder)
@@ -132,7 +138,7 @@ func SetPrometheusTargets(addresses []string) {
 	}
 }
 
-func StartExperiments(localIP string, config *types.Config) {
+func StartExperiments(localIP string, config *types.Config, oneExperimentMode bool) {
 	wg := sync.WaitGroup{}
 
 	addresses := config.SutAddresses
@@ -149,6 +155,10 @@ func StartExperiments(localIP string, config *types.Config) {
 			toAdd = append(toAdd, e)
 		}
 		experiments = append(experiments, toAdd...)
+	}
+
+	if oneExperimentMode {
+		experiments = experiments[:1]
 	}
 
 	wg.Add(len(addresses))
