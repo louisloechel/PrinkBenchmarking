@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"prinkbenchmarking/src/exporter"
 	"prinkbenchmarking/src/types"
 	"strings"
 	"time"
@@ -27,7 +28,7 @@ func handleReadConnection(conn net.Conn, config types.Config, experiment *types.
 
 		// Export record as prometheus Gauge
 		record := strings.Split(response, ";")
-		ExportRecordAsPrometheusGaugePrink(record)
+		exporter.ExportRecordAsPrometheusGaugePrink(record)
 
 		output := fmt.Sprintf("%v; %s\n", time.Now(), response)
 		_, err := writer.Write([]byte(output))

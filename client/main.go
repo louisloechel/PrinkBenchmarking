@@ -6,6 +6,7 @@ import (
 	"os"
 	"prinkbenchmarking/src/config"
 	"prinkbenchmarking/src/evaluation"
+	"prinkbenchmarking/src/exporter"
 	"prinkbenchmarking/src/types"
 	"sync"
 )
@@ -83,8 +84,7 @@ func main() {
 	log.Printf("Local IP: %s", localIP)
 
 	// Start Prometheus exporter and register metrics
-	go evaluation.StartPrometheusExporter(config.PrometheusExporterAddress)
-	evaluation.RegisterMetrics()
+	go exporter.StartPrometheusExporter(config.PrometheusExporterAddress)
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "listen" {
