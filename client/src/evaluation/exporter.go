@@ -103,13 +103,13 @@ func ExportRecordAsPrometheusGaugePrink(record []string) {
 	squre_feet_list := strings.Split(square_feet_tuple, ",")
 	square_feet_sum := 0.0
 
-	for _, meter_reading := range squre_feet_list {
-		meter_reading, err := strconv.ParseFloat(meter_reading, 64)
+	for _, square_feet_entry := range squre_feet_list {
+		square_feet_entry, err := strconv.ParseFloat(square_feet_entry, 64)
 		if err != nil {
 			log.Printf("Error converting meter reading to float: %v", err)
 			return
 		}
-		square_feet_sum += meter_reading
+		square_feet_sum += square_feet_entry
 	}
 	square_feet := square_feet_sum / float64(len(squre_feet_list))
 
