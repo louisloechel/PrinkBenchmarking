@@ -175,7 +175,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum(raw_gauge_meter_reading[1h])",
+          "expr": "sum(raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -251,7 +251,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum (raw_gauge_meter_reading[1h]/raw_gauge_square_feet[1h])",
+          "expr": "sum (raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h]/raw_gauge_square_feet{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -327,7 +327,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum(prink_gauge_meter_reading[1h])",
+          "expr": "sum(prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -402,7 +402,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum (prink_gauge_meter_reading[1h]/prink_gauge_square_feet[1h])",
+          "expr": "sum (prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h]/prink_gauge_square_feet{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -474,7 +474,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum by(primary_use) (raw_gauge_meter_reading[1h])",
+          "expr": "sum by(primary_use) (raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -549,7 +549,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum by(primary_use) (prink_gauge_meter_reading[1h])",
+          "expr": "sum by(primary_use) (prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -665,7 +665,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by(primary_use) (raw_gauge_meter_reading[1h])",
+          "expr": "sum by(primary_use) (raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -768,7 +768,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum by(primary_use) (prink_gauge_meter_reading[1h])",
+          "expr": "sum by(primary_use) (prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -847,7 +847,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum by(primary_use) (raw_gauge_meter_reading[1h])",
+          "expr": "sum by(primary_use) (raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -925,7 +925,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum by(primary_use) (prink_gauge_meter_reading[1h])",
+          "expr": "sum by(primary_use) (prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1013,7 +1013,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "count by(primary_use) (raw_gauge_meter_reading[1h])",
+          "expr": "count by(primary_use) (raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -1093,7 +1093,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "count(raw_gauge_meter_reading[1h])",
+          "expr": "count(raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -1180,7 +1180,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "count by(primary_use) (prink_gauge_meter_reading[1h])",
+          "expr": "count by(primary_use) (prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -1260,7 +1260,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "count(prink_gauge_meter_reading[1h])",
+          "expr": "count(prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -1428,7 +1428,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum by(primary_use) (prink_gauge_meter_reading{primary_use=\"Education\"}[1h])",
+          "expr": "sum by(primary_use) (prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\",primary_use=\"Education\"}[1h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1511,7 +1511,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "raw_gauge_meter_reading{primary_use=\"Education\"}[1h]",
+          "expr": "raw_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\",primary_use=\"Education\"}[1h]",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1594,7 +1594,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "prink_gauge_meter_reading{primary_use=\"Education\"}[1h]",
+          "expr": "prink_gauge_meter_reading{k=\"$k\",delta=\"$delta\",l=\"$l\",beta=\"$beta\",zeta=\"$zeta\",mu=\"$mu\",run_id=\"$run_id\",primary_use=\"Education\"}[1h]",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1612,16 +1612,178 @@
   "schemaVersion": 39,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(k)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "k",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(k)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(l)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "l",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(l)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(delta)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "delta",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(delta)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(run_id)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "run_id",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(run_id)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(beta)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "beta",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(beta)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(mu)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "mu",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(mu)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(zeta)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "zeta",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(zeta)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
   },
   "time": {
-    "from": "2024-02-15T18:21:05.026Z",
-    "to": "2024-02-17T01:18:31.960Z"
+    "from": "2024-07-29T12:18:30.126Z",
+    "to": "2024-07-29T17:59:47.595Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "New dashboard",
   "uid": "fe38bdwz0v9xcb",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
