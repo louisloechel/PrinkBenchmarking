@@ -45,6 +45,14 @@ type Experiment struct {
 	RunId int
 }
 
+func ExperimentKeys() []string {
+	return []string{"k", "delta", "l", "beta", "zeta", "mu", "run_id"}
+}
+
+func (e Experiment) ToLabels() []string {
+	return []string {fmt.Sprintf("%d", e.K), fmt.Sprintf("%d", e.Delta), fmt.Sprintf("%d", e.L), fmt.Sprintf("%d", e.Beta), fmt.Sprintf("%d", e.Zeta), fmt.Sprintf("%d", e.Mu), fmt.Sprintf("%d", e.RunId)}
+}
+
 func (e Experiment) String() string {
 	return fmt.Sprintf("Experiment: k=%d, delta=%d, l=%d, beta=%d, zeta=%d, mu=%d, run_id=%d, local_host=%s, sut_host=%s, sut_port_write=%d, sut_port_read=%d", e.K, e.Delta, e.L, e.Beta, e.Zeta, e.Mu, e.RunId, e.LocalHost, e.SutHost, e.SutPortWrite, e.SutPortRead)
 }

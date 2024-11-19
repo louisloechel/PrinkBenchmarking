@@ -3,6 +3,7 @@ package exporter
 import (
 	"log"
 	"net/http"
+	"prinkbenchmarking/src/types"
 	"strconv"
 	"strings"
 	"sync"
@@ -47,17 +48,22 @@ type prinkCollector struct {
 	rawGaugeSquareFeet *prinkMetric
 	prinkGaugeMeterReading *prinkMetric
 	prinkGaugeSquareFeet *prinkMetric
+	
+	experiment *types.Experiment
 }
 
 
 //You must create a constructor for you collector that
 //initializes every descriptor and returns a pointer to the collector
 func newPrinkCollector() *prinkCollector {
+	keys := types.ExperimentKeys()
+
+	labels := append([]string{"building_id", "primary_use"}, keys...) 
 	return &prinkCollector{
-		rawGaugeMeterReading: newPrinkMetric("raw_gauge_meter_reading","P", []string{"building_id", "primary_use"}),
-		rawGaugeSquareFeet: newPrinkMetric("raw_gauge_square_feet","P", []string{"building_id", "primary_use"}),
-		prinkGaugeMeterReading: newPrinkMetric("prink_gauge_meter_reading","P", []string{"building_id", "primary_use"}),
-		prinkGaugeSquareFeet: newPrinkMetric("prink_gauge_square_feet","P", []string{"building_id", "primary_use"}),
+		rawGaugeMeterReading: newPrinkMetric("raw_gauge_meter_reading","P", labels),
+		rawGaugeSquareFeet: newPrinkMetric("raw_gauge_square_feet","P", labels),
+		prinkGaugeMeterReading: newPrinkMetric("prink_gauge_meter_reading","P", labels),
+		prinkGaugeSquareFeet: newPrinkMetric("prink_gauge_square_feet","P", labels),
 	}
 }
 
@@ -82,7 +88,10 @@ func (collector *prinkCollector) Collect(ch chan<- prometheus.Metric) {
 		for _, value := range metric.values {
 			ts := value.timestamp
 			normalizedTs := time.Date(time.Now().Year(), ts.Month(), ts.Day(), ts.Hour(), ts.Minute(), ts.Second(), 0, ts.Location())
-			m := prometheus.MustNewConstMetric(metric.desc, metric.valueType, value.value, value.labelValues...)
+
+			labels := append(value.labelValues, collector.experiment.ToLabels()...)
+
+			m := prometheus.MustNewConstMetric(metric.desc, metric.valueType, value.value, labels...)
 			m = prometheus.NewMetricWithTimestamp(normalizedTs, m)
 			ch <- m
 		}
@@ -99,6 +108,10 @@ func StartPrometheusExporter(addr string) {
 	// Expose /metrics HTTP endpoint using the created custom registry.
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(addr, nil))
+}
+
+func RegisterExperiment(experiment *types.Experiment) {
+	collector.experiment = experiment
 }
 
 

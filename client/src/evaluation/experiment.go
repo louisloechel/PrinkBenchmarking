@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	cfg "prinkbenchmarking/src/config"
+	"prinkbenchmarking/src/exporter"
 	"prinkbenchmarking/src/prink"
 	"prinkbenchmarking/src/types"
 	"sync"
@@ -41,6 +42,8 @@ func RunSockets(experiment* types.Experiment, config types.Config) {
 }
 
 func RunExperiment(experiment types.Experiment, config types.Config) {
+
+	exporter.RegisterExperiment(&experiment)
 
 	var wg sync.WaitGroup
 	// Increment the WaitGroup counter
