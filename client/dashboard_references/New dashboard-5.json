@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.3.0+security-01"
+      "version": "11.2.2+security-01"
     },
     {
       "type": "datasource",
@@ -87,7 +87,7 @@
         "content": "# Raw Data",
         "mode": "markdown"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "transparent": true,
       "type": "text"
     },
@@ -108,7 +108,7 @@
         "content": "# Prink Data",
         "mode": "markdown"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "transparent": true,
       "type": "text"
     },
@@ -166,7 +166,7 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -242,7 +242,7 @@
         "textMode": "value_and_name",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -318,7 +318,7 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -394,7 +394,7 @@
         "textMode": "value_and_name",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -465,7 +465,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -540,7 +540,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -622,103 +622,13 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Education"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#117733",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Entertainment/public assembly"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "#88ccee",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Lodging/residential"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#882255",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Parking"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#44aa99",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Public services"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#999933",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Technology/science"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#aa4499",
-                  "mode": "shades"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Utility"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#cc6677",
+                  "fixedColor": "#F2CC0C",
                   "mode": "fixed"
                 }
               }
@@ -828,98 +738,7 @@
           },
           "unit": "kwatth"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "<ROOT>"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#dddddd",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Education"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#117733",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Entertainment/public assembly"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#88ccee",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Public services"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#999933",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "administrative"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#ddcc77",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "public"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#332288",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 11,
@@ -1019,7 +838,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1097,7 +916,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1185,7 +1004,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1265,7 +1084,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1352,7 +1171,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1432,7 +1251,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1470,7 +1289,7 @@
         "content": "# >>> Sektor: Education <<<",
         "mode": "markdown"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "transparent": true,
       "type": "text"
     },
@@ -1526,7 +1345,7 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1600,7 +1419,7 @@
         "textMode": "value_and_name",
         "wideLayout": false
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1682,7 +1501,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1765,7 +1584,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.3.0+security-01",
+      "pluginVersion": "11.2.2+security-01",
       "targets": [
         {
           "datasource": {
@@ -1790,7 +1609,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 40,
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
@@ -1801,7 +1620,9 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(k)",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "k",
         "options": [],
         "query": {
@@ -1811,6 +1632,8 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
@@ -1820,7 +1643,9 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(l)",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "l",
         "options": [],
         "query": {
@@ -1830,6 +1655,8 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
@@ -1839,7 +1666,9 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(delta)",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "delta",
         "options": [],
         "query": {
@@ -1849,6 +1678,8 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
@@ -1858,7 +1689,9 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(run_id)",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "run_id",
         "options": [],
         "query": {
@@ -1868,6 +1701,8 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
@@ -1877,7 +1712,9 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(beta)",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "beta",
         "options": [],
         "query": {
@@ -1887,6 +1724,8 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
@@ -1896,7 +1735,9 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(mu)",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "mu",
         "options": [],
         "query": {
@@ -1906,6 +1747,8 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       },
       {
@@ -1915,7 +1758,9 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(zeta)",
+        "hide": 0,
         "includeAll": false,
+        "multi": false,
         "name": "zeta",
         "options": [],
         "query": {
@@ -1925,18 +1770,20 @@
         },
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
         "type": "query"
       }
     ]
   },
   "time": {
-    "from": "2024-03-28T17:11:56.138Z",
-    "to": "2024-03-29T17:56:03.329Z"
+    "from": "2024-07-29T12:18:30.126Z",
+    "to": "2024-07-29T17:59:47.595Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "New dashboard",
   "uid": "fe38bdwz0v9xcb",
-  "version": 4,
+  "version": 3,
   "weekStart": ""
 }
