@@ -173,7 +173,7 @@ func StartExperiments(localIP string, config *types.Config, oneExperimentMode bo
 			for len(exp) > 0 {
 				experiment := <-exp
 
-				if experiment.RunId > 3 {
+				if experiment.Try >= 3 {
 					log.Printf("Experiment %v failed 3 times. Skipping it.", experiment)
 					continue
 				}
@@ -190,7 +190,7 @@ func StartExperiments(localIP string, config *types.Config, oneExperimentMode bo
 				} else {
 					log.Printf("Experiment %v failed", experiment)
 					// retry the experiment
-					experiment.RunId += 1
+					experiment.Try += 1
 					exp <- experiment
 				}
 			}

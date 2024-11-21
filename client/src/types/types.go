@@ -43,6 +43,7 @@ type Experiment struct {
 	SutPortRead  int
 
 	RunId int
+	Try int
 }
 
 func ExperimentKeys() []string {
