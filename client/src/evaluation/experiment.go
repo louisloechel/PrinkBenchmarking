@@ -71,13 +71,15 @@ func RunExperiment(experiment types.Experiment, config types.Config) {
 		for {
 			select {
 			case <-done:
-			  SaveFlamegraph(fg, &experiment, config)
+			  if err := SaveFlamegraph(fg, &experiment, config); err != nil {
+					log.Println("Error in saving flamegraph: ", err)
+				}
 				return
-			case t := <-ticker.C:
-				fmt.Println("Tick at", t)
+			case <-ticker.C:
 				flamegraph, err := prink.GetProfilingData(&experiment, config);
 				if err != nil {
 					log.Println("Error in prink profiling: ", err)
+					done <- true
 					continue
 				}
 				fg = flamegraph
@@ -92,7 +94,7 @@ func RunExperiment(experiment types.Experiment, config types.Config) {
 }
 
 
-func SaveFlamegraph(fg *prink.Flamegraph, experiment *types.Experiment, config types.Config) {
+func SaveFlamegraph(fg *prink.Flamegraph, experiment *types.Experiment, config types.Config) error {
 	// save flamegraph
 	filename := fmt.Sprintf("%s/flamegraph-%s.%s.json", config.OutputFolder, time.Now().Format("2006-01-02.15:04:05"), experiment.ToFileName())
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -101,5 +103,5 @@ func SaveFlamegraph(fg *prink.Flamegraph, experiment *types.Experiment, config t
 	}
 	defer file.Close()
 
-	json.NewEncoder(file).Encode(fg)
+	return json.NewEncoder(file).Encode(fg)
 }

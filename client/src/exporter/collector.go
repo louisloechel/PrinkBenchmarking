@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -104,9 +105,18 @@ func (collector *prinkCollector) Collect(ch chan<- prometheus.Metric) {
 
 
 func StartPrometheusExporter(addr string) {
-	prometheus.MustRegister(collector)
+	reg := prometheus.NewPedanticRegistry()
+
+
+	reg.MustRegister(
+		collector,
+		collectors.NewGoCollector(
+			collectors.WithGoCollectorRuntimeMetrics(collectors.GoRuntimeMetricsRule{Matcher: collectors.MetricsAll.Matcher}),
+		),
+	)
+
 	// Expose /metrics HTTP endpoint using the created custom registry.
-	http.Handle("/metrics", promhttp.Handler())
+	http.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
