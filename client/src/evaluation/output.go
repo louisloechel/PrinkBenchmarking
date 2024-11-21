@@ -28,7 +28,7 @@ func handleReadConnection(conn net.Conn, config types.Config, experiment *types.
 
 		// Export record as prometheus Gauge
 		record := strings.Split(response, ";")
-		exporter.ExportRecordAsPrometheusGaugePrink(record)
+		exporter.ExportRecordAsPrometheusGaugePrink(record, experiment)
 
 		output := fmt.Sprintf("%v; %s\n", time.Now(), response)
 		_, err := writer.Write([]byte(output))
@@ -47,6 +47,7 @@ func handleReadConnection(conn net.Conn, config types.Config, experiment *types.
 func readSocketConnection(e *types.Experiment, config types.Config) error {
 	// Open socket connection
 	ln, err := net.Listen("tcp", fmt.Sprintf("%s:%d", "0.0.0.0", e.SutPortRead))
+	ln.(*net.TCPListener).SetDeadline(time.Now().Add(5 * time.Minute))
 	if err != nil {
 		return fmt.Errorf("could not open read socket connection: %v", err)
 	}

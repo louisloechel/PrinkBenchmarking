@@ -161,27 +161,46 @@ func StartExperiments(localIP string, config *types.Config, oneExperimentMode bo
 		experiments = experiments[:1]
 	}
 
+	exp := make(chan types.Experiment, len(experiments))
+	for _, experiment := range experiments {
+		exp <- experiment
+	}
+
 	wg.Add(len(addresses))
 
 	for i, sutHost := range addresses {
 		go func(i int, sutHost string) {
-			for len(experiments) > 0 {
-				// pick first experiment
-				var experiment types.Experiment
-				experiment, experiments = experiments[0], experiments[1:]
+			for len(exp) > 0 {
+				experiment := <-exp
+
+				if experiment.RunId > 3 {
+					log.Printf("Experiment %v failed 3 times. Skipping it.", experiment)
+					continue
+				}
 
 				experiment.LocalHost = localIP
 				experiment.SutHost = sutHost
 				experiment.SutPortWrite = config.PortWrite + 2*i
 				experiment.SutPortRead = config.PortRead + 2*i
 				// Start the experiment
-				log.Printf("Starting %d experiment on %s: %v", len(experiments), sutHost, experiment)
+				log.Printf("Starting %d experiment on %s: %v", len(exp), sutHost, experiment)
 
-				evaluation.RunExperiment(experiment, *config)
+				if evaluation.RunExperiment(experiment, *config) {
+					log.Printf("Experiment %v finished successfully", experiment)
+				} else {
+					log.Printf("Experiment %v failed", experiment)
+					// retry the experiment
+					experiment.RunId += 1
+					exp <- experiment
+				}
 			}
 			defer wg.Done()
 		}(i, sutHost)
 	}
 
 	wg.Wait()
+
+	if len(exp) > 0 {
+		log.Printf("There are %d experiments left to run", len(exp))
+	}
 }

@@ -5,11 +5,12 @@ import (
 	"log"
 	"net"
 	"prinkbenchmarking/src/exporter"
+	"prinkbenchmarking/src/types"
 	"strings"
 	"time"
 )
 
-func benchmark(dataset [][]string, conn net.Conn) error {
+func benchmark(dataset [][]string, conn net.Conn, experiment *types.Experiment) error {
 	// benchmark the SUT
 	// Iterate over the records for duration seconds and write them to console (for now)
 	count := 0
@@ -20,7 +21,7 @@ func benchmark(dataset [][]string, conn net.Conn) error {
 		}
 
 		// Export record as prometheus Gauge
-		exporter.ExportRecordAsPrometheusGaugeRaw(record)
+		exporter.ExportRecordAsPrometheusGaugeRaw(record, experiment)
 
 		// Data fields:
 		// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed, building_id2, unix_timestamp,

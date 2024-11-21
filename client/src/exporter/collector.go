@@ -20,6 +20,7 @@ type prinkMetricValue struct {
 	value float64
 	timestamp time.Time
 	labelValues []string
+	experiment *types.Experiment
 }
 
 type prinkMetric struct {
@@ -37,10 +38,10 @@ func newPrinkMetric(name string, help string, variableLabels []string) *prinkMet
 	}
 }
 
-func (metric *prinkMetric) Add(value float64, timestamp time.Time, labelValues []string) {
+func (metric *prinkMetric) Add(value float64, timestamp time.Time, labelValues []string, experiment *types.Experiment) {
 	metric.mtx.Lock()
 	defer metric.mtx.Unlock()
-	metric.values = append(metric.values, prinkMetricValue{value: value, timestamp: timestamp, labelValues: labelValues})
+	metric.values = append(metric.values, prinkMetricValue{value: value, timestamp: timestamp, labelValues: labelValues, experiment: experiment})
 }
 
 
@@ -49,8 +50,6 @@ type prinkCollector struct {
 	rawGaugeSquareFeet *prinkMetric
 	prinkGaugeMeterReading *prinkMetric
 	prinkGaugeSquareFeet *prinkMetric
-	
-	experiment *types.Experiment
 }
 
 
@@ -90,7 +89,7 @@ func (collector *prinkCollector) Collect(ch chan<- prometheus.Metric) {
 			ts := value.timestamp
 			normalizedTs := time.Date(time.Now().Year(), ts.Month(), ts.Day(), ts.Hour(), ts.Minute(), ts.Second(), 0, ts.Location())
 
-			labels := append(value.labelValues, collector.experiment.ToLabels()...)
+			labels := append(value.labelValues, value.experiment.ToLabels()...)
 
 			m := prometheus.MustNewConstMetric(metric.desc, metric.valueType, value.value, labels...)
 			m = prometheus.NewMetricWithTimestamp(normalizedTs, m)
@@ -120,12 +119,8 @@ func StartPrometheusExporter(addr string) {
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
-func RegisterExperiment(experiment *types.Experiment) {
-	collector.experiment = experiment
-}
 
-
-func ExportRecordAsPrometheusGaugeRaw(record []string) {
+func ExportRecordAsPrometheusGaugeRaw(record []string, experiment *types.Experiment) {
 	// Data fields:
 	// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed, building_id2, unix_timestamp,
 
@@ -151,11 +146,11 @@ func ExportRecordAsPrometheusGaugeRaw(record []string) {
 		return
 	}
 
-	collector.rawGaugeMeterReading.Add(meter_reading, ts, []string{buildingID, primaryUse})
-	collector.rawGaugeSquareFeet.Add(square_feet, ts, []string{buildingID, primaryUse})
+	collector.rawGaugeMeterReading.Add(meter_reading, ts, []string{buildingID, primaryUse}, experiment)
+	collector.rawGaugeSquareFeet.Add(square_feet, ts, []string{buildingID, primaryUse}, experiment)
 }
 
-func ExportRecordAsPrometheusGaugePrink(record []string) {
+func ExportRecordAsPrometheusGaugePrink(record []string, experiment *types.Experiment) {
 	// Data fields:
 	// building_id, timestamp, meter_reading, primary_use, square_feet, year_built, floor_count, air_temperature, cloud_coverage, dew_temperature, precip_depth_1_hr, sea_level_pressure, wind_direction, wind_speed, building_id2, unix_timestamp,
 
@@ -195,7 +190,7 @@ func ExportRecordAsPrometheusGaugePrink(record []string) {
 
 	// Expose the data as prometheus gauges
 	
-	collector.prinkGaugeMeterReading.Add(meter_reading, ts, []string{buildingID, primaryUse})
-	collector.prinkGaugeSquareFeet.Add(square_feet, ts, []string{buildingID, primaryUse})
+	collector.prinkGaugeMeterReading.Add(meter_reading, ts, []string{buildingID, primaryUse}, experiment)
+	collector.prinkGaugeSquareFeet.Add(square_feet, ts, []string{buildingID, primaryUse}, experiment)
 }
 

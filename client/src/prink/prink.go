@@ -159,13 +159,16 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 		return err
 	}
 
-	statusCh, errCh := cli.ContainerWait(ctx, containerJobManager.ID, container.WaitConditionNotRunning)
+	statusCh, errCh := cli.ContainerWait(ctx, containerJobManager.ID, container.WaitConditionNextExit)
 	select {
 	case err := <-errCh:
 		if err != nil {
 			return err
 		}
-	case <-statusCh:
+	case res := <-statusCh:
+		if res.StatusCode != 0 {
+			return fmt.Errorf("jobmanager exited with status %d", res.StatusCode)
+		}
 	}
 
 	logJobManager, err := cli.ContainerLogs(ctx, containerJobManager.ID, container.LogsOptions{ShowStdout: true})

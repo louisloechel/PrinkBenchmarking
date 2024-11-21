@@ -6,16 +6,17 @@ import (
 	"log"
 	"os"
 	cfg "prinkbenchmarking/src/config"
-	"prinkbenchmarking/src/exporter"
 	"prinkbenchmarking/src/prink"
 	"prinkbenchmarking/src/types"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
-func RunSockets(experiment* types.Experiment, config types.Config) {
+func RunSockets(experiment* types.Experiment, config types.Config) bool {
 	dataset := cfg.LoadDataset(config.InputData)
 
+	success := atomic.Int32{}
 	var wg sync.WaitGroup
 
 	// Increment the WaitGroup counter
@@ -26,6 +27,7 @@ func RunSockets(experiment* types.Experiment, config types.Config) {
 		defer wg.Done() // Decrement the counter when the goroutine completes
 		if err := socketConnection(experiment, dataset); err != nil {
 			log.Println("Error in socket connection: ", err)
+			success.Add(1)
 		}
 	}()
 
@@ -34,17 +36,18 @@ func RunSockets(experiment* types.Experiment, config types.Config) {
 		defer wg.Done() // Decrement the counter when the goroutine completes
 		if err := readSocketConnection(experiment, config); err != nil {
 			log.Println("Error in socket connection: ", err)
+			success.Add(1)
 		}
 	}()
 
 	// Wait for all goroutines to finish
 	wg.Wait()
+	return success.Load() == 0
 }
 
-func RunExperiment(experiment types.Experiment, config types.Config) {
-
-	exporter.RegisterExperiment(&experiment)
-
+func RunExperiment(experiment types.Experiment, config types.Config) bool {
+	
+	success := atomic.Bool{}
 	var wg sync.WaitGroup
 	// Increment the WaitGroup counter
 	wg.Add(2)
@@ -60,7 +63,7 @@ func RunExperiment(experiment types.Experiment, config types.Config) {
 
 	go func() {
 		defer wg.Done() // Decrement the counter when the goroutine completes
-		RunSockets(&experiment, config)
+		success.Store(RunSockets(&experiment, config))
 	}()
 
 	ticker := time.NewTicker(time.Second)
@@ -68,6 +71,7 @@ func RunExperiment(experiment types.Experiment, config types.Config) {
 
 	go func() {
 		var fg *prink.Flamegraph
+		var prevError string
 		for {
 			select {
 			case <-done:
@@ -77,9 +81,9 @@ func RunExperiment(experiment types.Experiment, config types.Config) {
 				return
 			case <-ticker.C:
 				flamegraph, err := prink.GetProfilingData(&experiment, config);
-				if err != nil {
+				if err != nil && err.Error() != prevError {
 					log.Println("Error in prink profiling: ", err)
-					done <- true
+					prevError = err.Error()
 					continue
 				}
 				fg = flamegraph
@@ -91,6 +95,7 @@ func RunExperiment(experiment types.Experiment, config types.Config) {
 	wg.Wait()
 	ticker.Stop()
 	done <- true
+	return success.Load()
 }
 
 
