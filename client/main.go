@@ -8,6 +8,7 @@ import (
 	"prinkbenchmarking/src/evaluation"
 	"prinkbenchmarking/src/exporter"
 	"prinkbenchmarking/src/types"
+	"strconv"
 	"sync"
 )
 
@@ -107,14 +108,35 @@ func main() {
 			return
 		}
 	}
-	oneExperimentMode := false
-	if len(os.Args) > 1 && os.Args[1] == "one-experiment" {
-		oneExperimentMode = true
+
+	// Experiment: k=80, delta=20000, l=0, beta=321728, zeta=0, mu=100, run_id=2, local_host=10.0.53.197, sut_host=10.0.34.49, sut_port_write=50069, sut_port_read=50070
+
+	if len(os.Args) >= 3 {
+		// Run a single experiment
+		K, _ := strconv.Atoi(os.Args[1])
+		Delta, _ := strconv.Atoi(os.Args[2])
+		L, _ := strconv.Atoi(os.Args[3])
+
+		experiment := types.Experiment{
+			K:            K,
+			Delta:        Delta,
+			L:            L,
+			Beta: 321728,
+			Zeta: 0,
+			Mu:   100,
+			LocalHost: localIP,
+			SutHost: config.SutAddresses[0],
+			SutPortWrite: config.PortWrite,
+			SutPortRead: config.PortRead,
+			RunId: 0,
+		}
 		log.Print("Running in one-experiment mode")
+
+		StartExperiments(localIP, config, []types.Experiment{experiment})
 	}
 
 
-	StartExperiments(localIP, config, oneExperimentMode)
+	StartExperiments(localIP, config, nil)
 
 	experimentDone()
 	log.Printf("Created output files in: %s", config.OutputFolder)
@@ -138,7 +160,7 @@ func SetPrometheusTargets(addresses []string) {
 	}
 }
 
-func StartExperiments(localIP string, config *types.Config, oneExperimentMode bool) {
+func StartExperiments(localIP string, config *types.Config, experiments []types.Experiment) {
 	wg := sync.WaitGroup{}
 
 	addresses := config.SutAddresses
@@ -147,18 +169,16 @@ func StartExperiments(localIP string, config *types.Config, oneExperimentMode bo
 	// add addresses to targets.json
 	SetPrometheusTargets(addresses)
 
-	experiments := []types.Experiment{}
-	for run := 0; run < 3; run++ {
-		toAdd := []types.Experiment{}
-		for _, e := range getExperiments() {
-			e.RunId = run
-			toAdd = append(toAdd, e)
+	if experiments == nil {
+		experiments = []types.Experiment{}
+		for run := 0; run < 3; run++ {
+			toAdd := []types.Experiment{}
+			for _, e := range getExperiments() {
+				e.RunId = run
+				toAdd = append(toAdd, e)
+			}
+			experiments = append(experiments, toAdd...)
 		}
-		experiments = append(experiments, toAdd...)
-	}
-
-	if oneExperimentMode {
-		experiments = experiments[:1]
 	}
 
 	exp := make(chan types.Experiment, len(experiments))

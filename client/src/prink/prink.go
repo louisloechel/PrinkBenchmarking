@@ -18,24 +18,60 @@ import (
 	"github.com/docker/go-connections/nat"
 )
 
-func StartPrink(experiment *types.Experiment, config types.Config) error {
-	ctx := context.Background()
-
+func getDockerHost(experiment *types.Experiment, config types.Config) (string, error) {
 	// string writer
 	writer := new(strings.Builder)
 	tmpl, err := template.New("dockerHost").Parse(config.SutDockerHostTemplate)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	err = tmpl.Execute(writer, map[string]string{
 		"Address": experiment.SutHost,
 	})
 	if err != nil {
+		return "", err
+	}
+
+	return writer.String(), nil
+}
+
+func CleanupPrink(dockerHost string) error {
+	ctx := context.Background()
+
+	cli, err := client.NewClientWithOpts(
+		client.FromEnv,
+		client.WithAPIVersionNegotiation(),
+		client.WithHost(dockerHost),
+	)
+	if err != nil {
+		return err
+	}
+	defer cli.Close()
+
+	containers, err := cli.ContainerList(ctx, container.ListOptions{})
+	if err != nil {
 		return err
 	}
 
-	dockerHost := writer.String()
+	for _, ctn := range containers {
+		log.Printf("Removing container %s", ctn.ID)
+		if err := cli.ContainerRemove(ctx, ctn.ID, container.RemoveOptions{Force: true}); err != nil {
+			log.Printf("Could not remove container %s: %v", ctn.ID, err)
+		}
+	}
+	return nil
+}
+
+func StartPrink(experiment *types.Experiment, config types.Config) error {
+	ctx := context.Background()
+
+	dockerHost, err := getDockerHost(experiment, config)
+	if err != nil {
+		return err
+	}
+
+	CleanupPrink(dockerHost)
 
 	cli, err := client.NewClientWithOpts(
 		client.FromEnv,
@@ -160,14 +196,15 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 	}
 
 	statusCh, errCh := cli.ContainerWait(ctx, containerJobManager.ID, container.WaitConditionNextExit)
+	var containerError error
 	select {
 	case err := <-errCh:
 		if err != nil {
-			return err
+			containerError = err
 		}
 	case res := <-statusCh:
 		if res.StatusCode != 0 {
-			return fmt.Errorf("jobmanager exited with status %d", res.StatusCode)
+			containerError = fmt.Errorf("jobmanager exited with status %d", res.StatusCode)
 		}
 	}
 
@@ -180,7 +217,7 @@ func StartPrink(experiment *types.Experiment, config types.Config) error {
 	if err == nil {
 		writeLogs(config.OutputFolder+"/flink_task_manager-"+time.Now().Format("2006-01-02.15:04:05")+experiment.ToFileName()+".log", &logTaskManager)
 	}
-	return nil
+	return containerError
 }
 
 func writeLogs(filename string, src *io.ReadCloser) {

@@ -3,7 +3,6 @@ package prink
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"prinkbenchmarking/src/types"
 )
@@ -106,7 +105,6 @@ func GetProfilingData(experiment *types.Experiment, config types.Config) (*Flame
 	var vertex Vertex
 	for _, v := range jobDetails.Vertices {
 		if v.Name[0] == 'k' {
-			log.Printf("Vertex: %s, Status: %s, Duration: %d", v.Name, v.Status, v.Duration)
 			vertex = v
 			break
 		}
