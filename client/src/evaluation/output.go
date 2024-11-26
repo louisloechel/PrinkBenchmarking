@@ -90,7 +90,7 @@ func initialiseResults(path string, experiment *types.Experiment) (*bufio.Writer
 	// Write header if the file is empty
 	if info.Size() == 0 {
 
-		_, err = writer.WriteString(strings.Join([]string{"t_e", "building_id", "timestamp", "meter_reading", "primary_use", "square_feet", "year_built", "floor_count", "air_temperature", "cloud_coverage", "dew_temperature", "precip_depth_1_hr", "sea_level_pressure", "wind_direction", "wind_speed", "m_id", "t_s", "info_loss"}, ";"))
+		_, err = writer.WriteString(strings.Join([]string{"t_e", "building_id", "timestamp", "meter_reading", "primary_use", "square_feet", "year_built", "floor_count", "air_temperature", "cloud_coverage", "dew_temperature", "precip_depth_1_hr", "sea_level_pressure", "wind_direction", "wind_speed", "building_id2", "unixTimestamp",  "m_id", "t_s", "t_bs", "t_bse", "t_d", "t_de", "info_loss"}, ";"))
 		writer.Write([]byte("\n"))
 		if err != nil {
 			log.Fatalf("Could not write to results.csv: %v", err)
